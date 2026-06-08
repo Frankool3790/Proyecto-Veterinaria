@@ -1,0 +1,570 @@
+{
+  "info": {
+    "name": "Veterinaria API",
+    "description": "API para Sistema de Gestión de Clínica Veterinaria",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Autenticación",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👥 Clientes",
+      "item": [
+        {
+          "name": "Obtener todos los clientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/clientes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Obtener cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/clientes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carlos Mendez\",\n  \"telefono\": \"555-3456\",\n  \"email\": \"carlos@email.com\",\n  \"direccion\": \"Calle Nueva 789\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/clientes",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Juan Pérez Actualizado\",\n  \"telefono\": \"555-9999\",\n  \"email\": \"juan.actualizado@email.com\",\n  \"direccion\": \"Calle Principal 999\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/clientes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/clientes/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "clientes", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🐾 Mascotas",
+      "item": [
+        {
+          "name": "Obtener todas las mascotas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/mascotas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "mascotas"]
+            }
+          }
+        },
+        {
+          "name": "Obtener mascota por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/mascotas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "mascotas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener mascotas por cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/mascotas/filter/cliente/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "mascotas", "filter", "cliente", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear mascota",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Whiskers\",\n  \"especie\": \"Gato\",\n  \"raza\": \"Siames\",\n  \"edad\": 2,\n  \"clienteId\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/mascotas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "mascotas"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar mascota",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Fluffy Actualizado\",\n  \"especie\": \"Gato\",\n  \"raza\": \"Persa Actualizado\",\n  \"edad\": 4,\n  \"clienteId\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/mascotas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "mascotas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar mascota",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/mascotas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "mascotas", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👨‍⚕️ Veterinarios",
+      "item": [
+        {
+          "name": "Obtener todos los veterinarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/veterinarios",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "veterinarios"]
+            }
+          }
+        },
+        {
+          "name": "Obtener veterinario por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/veterinarios/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "veterinarios", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear veterinario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Dr. Roberto Sánchez\",\n  \"especialidad\": \"Dermatología\",\n  \"email\": \"roberto@veterinaria.com\",\n  \"telefono\": \"555-0105\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/veterinarios",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "veterinarios"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar veterinario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombre\": \"Dr. Carlos López - Actualizado\",\n  \"especialidad\": \"Cirugía General\",\n  \"email\": \"carlos.actualizado@veterinaria.com\",\n  \"telefono\": \"555-0199\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/veterinarios/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "veterinarios", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar veterinario",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/veterinarios/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "veterinarios", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Citas",
+      "item": [
+        {
+          "name": "Obtener todas las citas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/citas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas"]
+            }
+          }
+        },
+        {
+          "name": "Obtener cita por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/citas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener citas por mascota",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/citas/filter/mascota/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas", "filter", "mascota", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener citas por veterinario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/citas/filter/veterinario/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas", "filter", "veterinario", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear cita",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"2024-12-25\",\n  \"hora\": \"10:30\",\n  \"mascotaId\": 1,\n  \"veterinarioId\": 1,\n  \"motivo\": \"Chequeo de rutina\",\n  \"estado\": \"PENDIENTE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/citas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar cita",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"fecha\": \"2024-12-26\",\n  \"hora\": \"14:00\",\n  \"mascotaId\": 1,\n  \"veterinarioId\": 2,\n  \"motivo\": \"Vacunación anual actualizada\",\n  \"estado\": \"CONFIRMADA\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/citas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar cita",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/citas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "citas", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📋 Historial Clínico",
+      "item": [
+        {
+          "name": "Obtener todo el historial",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/historial",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "historial"]
+            }
+          }
+        },
+        {
+          "name": "Obtener registro por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/historial/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "historial", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener historial por mascota",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/historial/filter/mascota/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "historial", "filter", "mascota", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear registro de historial",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mascotaId\": 1,\n  \"descripcion\": \"Consulta por dolor abdominal\",\n  \"fecha\": \"2024-06-08\",\n  \"notas\": \"Se realizó examen físico y ultrasonido. Se prescribió medicamento.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/historial",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "historial"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar registro de historial",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"mascotaId\": 1,\n  \"descripcion\": \"Vacunación anual actualizada\",\n  \"fecha\": \"2024-06-08\",\n  \"notas\": \"Se aplicó vacuna triple felina. Mascota en buen estado de salud.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/historial/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "historial", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar registro de historial",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/historial/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3307",
+              "path": ["api", "historial", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:3002/api",
+      "type": "string"
+    },
+    {
+      "key": "TOKEN",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
