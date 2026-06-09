@@ -29,6 +29,9 @@ export default function Sidebar() {
             <NavLink to="/historial" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
               Historial
             </NavLink>
+            <NavLink to="/pagos" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
+              Pagos
+            </NavLink>
           </>
         )}
 
@@ -39,6 +42,9 @@ export default function Sidebar() {
             </NavLink>
             <NavLink to="/mis-mascotas" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
               Mis Mascotas
+            </NavLink>
+            <NavLink to="/nuevo-pago" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
+              Nuevo Pago
             </NavLink>
             <NavLink to="/mis-turnos" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
               Mis Turnos

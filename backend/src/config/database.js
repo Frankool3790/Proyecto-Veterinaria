@@ -195,7 +195,20 @@ export const initializeDatabase = async () => {
         id INT AUTO_INCREMENT PRIMARY KEY,
         nombre VARCHAR(255) NOT NULL,
         especialidad VARCHAR(255),
-        email VARCHAR(255)
+        telefono VARCHAR(50)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS pagos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cliente_id INT,
+        monto DECIMAL(10, 2) NOT NULL,
+        metodo_pago VARCHAR(50),
+        estado VARCHAR(50) DEFAULT 'Completado',
+        fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+        descripcion TEXT,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 

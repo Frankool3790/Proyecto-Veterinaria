@@ -13,6 +13,8 @@ import NotFound from "../pages/NotFound/NotFound";
 import ClientMascotas from "../pages/Client/ClientMascotas";
 import ClientCitas from "../pages/Client/ClientCitas";
 import ClientHistorial from "../pages/Client/ClientHistorial";
+import NuevoPago from "../pages/Client/NuevoPago";
+import PagosAdmin from "../pages/Pagos/PagosAdmin";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -33,9 +35,11 @@ function AppRoutes() {
           <Route path="/citas" element={<Navigate replace to="/turnos" />} />
           <Route path="/veterinarios" element={<Veterinarios />} />
           <Route path="/historial" element={<Historial />} />
+          <Route path="/pagos" element={<PagosAdmin />} />
 
           {/* Rutas Cliente */}
           <Route path="/mis-mascotas" element={<ClientMascotas />} />
+          <Route path="/nuevo-pago" element={<NuevoPago />} />
           <Route path="/mis-turnos" element={<ClientCitas />} />
           <Route path="/mi-historial" element={<ClientHistorial />} />
         </Route>

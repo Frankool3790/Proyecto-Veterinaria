@@ -8,6 +8,7 @@ import mascotaRoutes from './src/routes/mascotaRoutes.js';
 import veterinarioRoutes from './src/routes/veterinarioRoutes.js';
 import citaRoutes from './src/routes/citaRoutes.js';
 import historialRoutes from './src/routes/historialRoutes.js';
+import pagoRoutes from './src/routes/pagoRoutes.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 
 dotenv.config();
@@ -29,6 +30,7 @@ app.use('/api/mascotas', mascotaRoutes);
 app.use('/api/veterinarios', veterinarioRoutes);
 app.use('/api/citas', citaRoutes);
 app.use('/api/historial', historialRoutes);
+app.use('/api/pagos', pagoRoutes);
 
 app.use(errorHandler);
 
