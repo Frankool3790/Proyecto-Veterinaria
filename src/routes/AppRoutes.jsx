@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home/Home";
+import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Clientes from "../pages/Clientes/Clientes";
 import Mascotas from "../pages/Mascotas/Mascotas";
@@ -19,7 +20,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Navigate to="/" replace />} />
+      <Route path="/login" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<MainLayout />}>

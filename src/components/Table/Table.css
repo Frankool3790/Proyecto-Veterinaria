@@ -1,9 +1,11 @@
 .table-card {
-  background: #ffffff;
+  background: rgba(30, 41, 59, 0.6); /* Fondo oscuro semi-transparente */
+  backdrop-filter: blur(10px);
   border-radius: 1rem;
-  padding: 1.25rem;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   overflow-x: auto;
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 table {
@@ -14,21 +16,31 @@ table {
 th,
 td {
   text-align: left;
-  padding: 1rem 0.85rem;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+  color: #f1f5f9; /* Letras claras para las celdas */
 }
 
 th {
-  color: var(--primary-dark);
-  font-weight: 700;
+  color: #bfdbfe; /* Azul claro para los encabezados */
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  background: rgba(15, 23, 42, 0.4); /* Fondo para el encabezado */
+}
+
+td .button {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
 }
 
 tbody tr:hover {
-  background: rgba(96, 165, 250, 0.08);
+  background: rgba(59, 130, 246, 0.1);
 }
 
 .empty-row {
-  padding: 2rem 0;
+  padding: 3rem 0;
   text-align: center;
-  color: var(--muted);
+  color: #94a3b8;
 }

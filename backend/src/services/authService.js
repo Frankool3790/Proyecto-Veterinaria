@@ -34,33 +34,41 @@ export const authService = {
     const username = email;
 
     return new Promise((resolve, reject) => {
-      // 1. Crear el cliente primero
-      db.run(
-        'INSERT INTO clientes (nombre, email) VALUES (?, ?)',
-        [`${nombre} ${apellido}`, email],
-        function (err) {
-          if (err) {
-            if (err.message.includes('UNIQUE')) {
-              return reject(createError(400, 'El email ya está registrado como cliente'));
-            }
-            return reject(createError(500, 'Error al crear perfil de cliente'));
-          }
-
-          const clienteId = this.lastID;
-
-          // 2. Crear el usuario vinculado al cliente
-          db.run(
-            'INSERT INTO usuarios (username, password, nombre, apellido, email, roles, cliente_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [username, hashedPassword, nombre, apellido, email, 'ROLE_USER', clienteId],
-            function (errUser) {
-              if (errUser) {
-                return reject(createError(500, 'Error al registrar usuario'));
-              }
-              resolve({ success: true, message: 'Usuario y perfil de cliente registrados exitosamente' });
-            }
-          );
+      // 1. Verificar si el usuario ya existe para dar un mensaje claro
+      db.get('SELECT id FROM usuarios WHERE email = ? OR username = ?', [email, username], (err, existingUser) => {
+        if (err) return reject(createError(500, 'Error al verificar usuario'));
+        if (existingUser) {
+          return reject(createError(400, 'El correo electrónico ya está en uso'));
         }
-      );
+
+        // 2. Crear el cliente primero
+        db.run(
+          'INSERT INTO clientes (nombre, email) VALUES (?, ?)',
+          [`${nombre} ${apellido}`, email],
+          function (err) {
+            if (err) {
+              if (err.message.includes('UNIQUE')) {
+                return reject(createError(400, 'El correo electrónico ya está en uso'));
+              }
+              return reject(createError(500, 'Error al crear perfil de cliente'));
+            }
+
+            const clienteId = this.lastID;
+
+            // 3. Crear el usuario vinculado al cliente
+            db.run(
+              'INSERT INTO usuarios (username, password, nombre, apellido, email, roles, cliente_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+              [username, hashedPassword, nombre, apellido, email, 'ROLE_USER', clienteId],
+              function (errUser) {
+                if (errUser) {
+                  return reject(createError(500, 'Error al registrar usuario'));
+                }
+                resolve({ success: true, message: 'Usuario y perfil de cliente registrados exitosamente' });
+              }
+            );
+          }
+        );
+      });
     });
   }
 };

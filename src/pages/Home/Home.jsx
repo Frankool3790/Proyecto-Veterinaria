@@ -1,41 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import Button from "../../components/Button/Button";
 import LandingNavbar from "../../components/LandingNavbar/LandingNavbar";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
+import Footer from "../../components/Footer/Footer";
 import "./Home.css";
 
 export default function Home() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [showRegister, setShowRegister] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    const result = await login(username, password);
-    if (result.success) {
-      navigate("/dashboard");
-    } else {
-      setError(result.message);
-    }
-  };
-
-  const scrollToLogin = () => {
-    const loginSection = document.getElementById("login-section");
-    if (loginSection) {
-      loginSection.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <div className="landing-page">
       <LandingNavbar 
-        onLoginClick={scrollToLogin} 
         onRegisterClick={() => setShowRegister(true)} 
       />
 
@@ -45,7 +21,7 @@ export default function Home() {
           onSuccess={() => {
             setShowRegister(false);
             alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
-            scrollToLogin();
+            navigate("/login");
           }}
         />
       )}
@@ -55,7 +31,9 @@ export default function Home() {
         <div className="hero-content">
           <h1>Veterinaria San Hyuga</h1>
           <p>Cuidando a tus mejores amigos con amor y profesionalismo.</p>
-          <a href="#login-section" className="btn-primary-link">Gestionar Clínica</a>
+          <button onClick={() => navigate("/login")} className="btn-primary-link" style={{ border: "none", cursor: "pointer" }}>
+            Gestionar Clínica
+          </button>
         </div>
       </header>
 
@@ -72,7 +50,7 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section className="services-section">
+      <section id="servicios" className="services-section">
         <div className="container">
           <h2>Nuestros Servicios</h2>
           <div className="services-grid">
@@ -100,44 +78,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Login Section */}
-      <section id="login-section" className="login-landing-section">
-        <div className="login-container">
-          <div className="login-box">
-            <h2>Acceso al Personal</h2>
-            <p>Ingresa para gestionar citas, clientes y mascotas.</p>
-            
-            <form onSubmit={handleSubmit} className="login-form">
-              {error && <div className="error-message">{error}</div>}
-              <div className="form-group">
-                <label>Usuario</label>
-                <input 
-                  type="text" 
-                  value={username} 
-                  onChange={(e) => setUsername(e.target.value)} 
-                  placeholder="admin"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Contraseña</label>
-                <input 
-                  type="password" 
-                  value={password} 
-                  onChange={(e) => setPassword(e.target.value)} 
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-              <Button type="submit" variant="primary">Iniciar Sesión</Button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      <footer className="landing-footer">
-        <p>&copy; 2024 Veterinaria San Hyuga. Todos los derechos reservados.</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,41 +1,69 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(15, 23, 42, 0.7); /* Overlay oscuro con mayor contraste */
   display: grid;
   place-items: center;
-  z-index: 50;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
 }
 
 .modal-content {
-  width: min(92vw, 520px);
-  background: #ffffff;
+  width: min(92vw, 600px);
+  background: #1e3a8a; /* Azul sólido oscuro (blue-900) */
   border-radius: 1rem;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
-  padding: 1.35rem;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  padding: 2.5rem;
+  color: #ffffff; /* Texto blanco por defecto para el fondo azul */
+  border: 1px solid #3b82f6; /* Borde azul brillante para definición */
 }
 
 .modal-header h3 {
   margin: 0;
-  color: var(--primary-dark);
+  color: #ffffff;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .modal-close {
   border: none;
-  background: transparent;
-  color: var(--muted);
-  font-size: 1.35rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 1.5rem;
   cursor: pointer;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
 }
 
-.modal-body {
-  display: grid;
-  gap: 1rem;
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Estilos para formularios dentro de modales azules */
+.modal-body label {
+  color: #bfdbfe; /* Azul claro para etiquetas */
+  font-weight: 600;
+}
+
+.modal-body input, 
+.modal-body select, 
+.modal-body textarea {
+  background: #ffffff;
+  color: #1e293b;
+  border: 2px solid #3b82f6;
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.modal-body .error-message {
+  color: #fecaca;
+  background: rgba(220, 38, 38, 0.2);
+  padding: 0.5rem;
+  border-radius: 0.4rem;
+  font-size: 0.9rem;
 }

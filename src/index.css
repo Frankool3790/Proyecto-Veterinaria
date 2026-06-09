@@ -1,12 +1,15 @@
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --primary: #7dd3fc;
-  --primary-dark: #0369a1;
-  --surface: #f8fbff;
-  --background: #eaf4ff;
-  --text: #0f172a;
-  --muted: #475569;
+  --primary-blue: #1e3a8a; /* Kaiser Deep Blue */
+  --secondary-purple: #4c1d95; /* Ness Deep Purple */
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --kaiser-rose: #be185d;
+  --surface: #0f172a;
+  --background: #020617;
+  --text: #f8fafc;
+  --muted: #94a3b8;
 }
 
 * {
@@ -23,6 +26,7 @@ body {
   margin: 0;
   background: var(--background);
   color: var(--text);
+  background: linear-gradient(135deg, #020617 0%, #1e1b4b 100%) fixed; /* Fixed background to avoid issues with scrolling */
 }
 
 button,
@@ -48,6 +52,7 @@ img {
 .page-shell {
   display: grid;
   gap: 1.5rem;
+  padding: 2rem;
 }
 
 .page-header {
@@ -56,42 +61,57 @@ img {
   gap: 1rem;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--accent-purple);
+  padding-bottom: 1rem;
 }
 
 .page-title {
-  color: var(--primary-dark);
+  color: #ffffff;
   font-size: clamp(1.8rem, 2vw, 2.3rem);
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.8); /* Stronger glow for visibility */
 }
 
 .page-copy {
-  color: var(--muted);
+  color: #f1f5f9; /* Brightest slate for maximum contrast */
   max-width: 42rem;
+  font-weight: 400;
 }
 
 .stats-grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .stat-card,
 .info-card {
-  background: #ffffff;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(10px);
   border-radius: 1rem;
-  padding: 1.25rem;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-blue);
 }
 
 .stat-card-title {
   font-weight: 700;
-  color: var(--muted);
+  color: #bfdbfe; /* Azul claro para mejor visibilidad */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .stat-card-value {
-  margin-top: 0.75rem;
-  font-size: 2rem;
-  color: var(--primary-dark);
+  margin-top: 1rem;
+  font-size: 2.5rem;
+  color: #ffffff;
+  font-weight: 800;
 }
 
 .page-actions {

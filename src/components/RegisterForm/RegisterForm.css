@@ -4,73 +4,69 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.75); /* Fondo más oscuro y sólido */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
+  backdrop-filter: blur(5px); /* Efecto de desenfoque */
 }
 
 .register-modal {
-  background: white;
-  padding: 2.5rem;
+  background: #1e3a8a; /* Azul sólido oscuro para que combine con el resto */
+  padding: 3rem;
   border-radius: 16px;
   width: 100%;
-  max-width: 500px;
+  max-width: 550px;
   position: relative;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid #3b82f6;
+  color: #ffffff;
+}
+
+.register-modal h2 {
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 700;
+}
+
+.register-modal p {
+  color: #bfdbfe;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #bfdbfe;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #ffffff;
+  color: #1e293b;
 }
 
 .close-btn {
   position: absolute;
   top: 1rem;
   right: 1.5rem;
-  background: none;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
-  font-size: 2rem;
+  font-size: 1.5rem;
   cursor: pointer;
-  color: #64748b;
-}
-
-.register-modal h2 {
-  margin-bottom: 0.5rem;
-  color: #1e293b;
-  text-align: center;
-}
-
-.register-modal p {
-  color: #64748b;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.form-row {
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: flex;
-  gap: 1rem;
-}
-
-.register-form .form-group {
-  margin-bottom: 1.25rem;
-  flex: 1;
-}
-
-.register-form label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #475569;
-}
-
-.register-form input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-.register-form button {
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0.8rem;
+  align-items: center;
+  justify-content: center;
 }

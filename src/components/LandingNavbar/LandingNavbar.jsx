@@ -1,11 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./LandingNavbar.css";
 
-export default function LandingNavbar({ onLoginClick, onRegisterClick }) {
+export default function LandingNavbar({ onRegisterClick }) {
+  const navigate = useNavigate();
+
   return (
     <nav className="landing-nav">
       <div className="landing-nav-container">
-        <div className="landing-nav-brand">
+        <div className="landing-nav-brand" onClick={() => navigate("/")} style={{ cursor: "pointer" }}>
           <span className="brand-logo">🐾</span>
           <span className="brand-name">Veterinaria San Hyuga</span>
         </div>
@@ -16,7 +19,7 @@ export default function LandingNavbar({ onLoginClick, onRegisterClick }) {
         </div>
 
         <div className="landing-nav-actions">
-          <button className="nav-btn btn-login" onClick={onLoginClick}>Iniciar Sesión</button>
+          <button className="nav-btn btn-login" onClick={() => navigate("/login")}>Iniciar Sesión</button>
           <button className="nav-btn btn-register" onClick={onRegisterClick}>Registrarse</button>
           <div className="nav-more">
             <span>⋮</span>

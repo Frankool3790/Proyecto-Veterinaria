@@ -174,15 +174,15 @@ export default function Citas() {
         <form className="form-grid" onSubmit={handleSubmit}>
           <div className="form-field">
             <label>Fecha</label>
-            <input name="fecha" type="date" value={form.fecha} onChange={handleChange} />
+            <input name="fecha" type="date" value={form.fecha} onChange={handleChange} required />
           </div>
           <div className="form-field">
             <label>Hora</label>
-            <input name="hora" type="time" value={form.hora} onChange={handleChange} />
+            <input name="hora" type="time" value={form.hora} onChange={handleChange} required />
           </div>
           <div className="form-field">
             <label>Mascota</label>
-            <select name="mascotaId" value={form.mascotaId} onChange={handleChange}>
+            <select name="mascotaId" value={form.mascotaId} onChange={handleChange} required>
               <option value="">Selecciona una mascota</option>
               {mascotas.map((mascota) => (
                 <option key={mascota.id} value={mascota.id}>{mascota.nombre}</option>
@@ -191,27 +191,37 @@ export default function Citas() {
           </div>
           <div className="form-field">
             <label>Veterinario</label>
-            <select name="veterinarioId" value={form.veterinarioId} onChange={handleChange}>
+            <select name="veterinarioId" value={form.veterinarioId} onChange={handleChange} required>
               <option value="">Selecciona un veterinario</option>
               {veterinarios.map((vet) => (
                 <option key={vet.id} value={vet.id}>{vet.nombre}</option>
               ))}
             </select>
           </div>
-          <div className="form-field">
+          <div className="form-field" style={{ gridColumn: "1 / -1" }}>
             <label>Motivo</label>
-            <input name="motivo" type="text" value={form.motivo} onChange={handleChange} placeholder="Ej. Vacunación" />
+            <textarea 
+              name="motivo" 
+              value={form.motivo} 
+              onChange={handleChange} 
+              placeholder="Describa el motivo de la consulta..."
+              rows="3"
+            />
           </div>
           <div className="form-field">
             <label>Estado</label>
             <select name="estado" value={form.estado} onChange={handleChange}>
               <option value="Pendiente">Pendiente</option>
-              <option value="Confirmado">Confirmado</option>
-              <option value="Cancelado">Cancelado</option>
+              <option value="Completada">Completada</option>
+              <option value="Cancelada">Cancelada</option>
             </select>
           </div>
-          {error && <p className="form-error">{error}</p>}
-          <Button type="submit" variant="primary">{editingId ? "Actualizar turno" : "Guardar turno"}</Button>
+          {error && <p className="error-message" style={{ gridColumn: "1 / -1" }}>{error}</p>}
+          <div className="form-actions" style={{ gridColumn: "1 / -1", marginTop: "1rem" }}>
+            <Button type="submit" variant="primary" style={{ width: "100%" }}>
+              {editingId ? "Actualizar Turno" : "Guardar Turno"}
+            </Button>
+          </div>
         </form>
       </Modal>
     </div>

@@ -13,7 +13,6 @@ export default function MainLayout() {
         <main className="content-area">
           <Outlet />
         </main>
-        <Footer />
       </div>
     </div>
   );

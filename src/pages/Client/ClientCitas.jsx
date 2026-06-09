@@ -69,12 +69,16 @@ export default function ClientCitas() {
                 <div key={cita.id} className="cita-card">
                   <div className="cita-time">{cita.hora}</div>
                   <div className="cita-info">
-                    <strong>Mascota:</strong> {cita.mascota_nombre}<br />
-                    <strong>Veterinario:</strong> {cita.veterinario_nombre}<br />
-                    <strong>Motivo:</strong> {cita.motivo}<br />
-                    <span className={`status-badge status-${cita.estado.toLowerCase()}`}>
-                      {cita.estado}
-                    </span>
+                    <div className="cita-header">
+                      <strong>Mascota:</strong> {cita.mascota_nombre}
+                      <span className={`status-badge status-${cita.estado.toLowerCase()}`}>
+                        {cita.estado}
+                      </span>
+                    </div>
+                    <div className="cita-body">
+                      <p><strong>Veterinario:</strong> {cita.veterinario_nombre}</p>
+                      <p><strong>Motivo/Descripción:</strong> {cita.motivo || "Sin descripción"}</p>
+                    </div>
                   </div>
                 </div>
               ))}

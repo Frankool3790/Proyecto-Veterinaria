@@ -3,6 +3,11 @@
   color: #333;
   line-height: 1.6;
   padding-top: 100px; /* Space for the fixed landing nav */
+  background: var(--background);
+}
+
+.landing-page .main-footer {
+  display: block;
 }
 
 .container {
@@ -13,7 +18,7 @@
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+  background: linear-gradient(rgba(15, 23, 42, 0.6), rgba(76, 29, 149, 0.6)), 
               url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&q=80&w=1964') no-repeat center center/cover;
   height: 80vh;
   display: flex;
@@ -21,12 +26,27 @@
   justify-content: center;
   text-align: center;
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(transparent, var(--background));
 }
 
 .hero-content h1 {
-  font-size: 4rem;
+  font-size: 4.5rem;
   margin-bottom: 1rem;
-  font-weight: 800;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
 }
 
 .hero-content p {
@@ -35,42 +55,50 @@
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  color: #e2e8f0; /* Color claro para mejor lectura en el hero */
+  font-weight: 500;
 }
 
 .btn-primary-link {
   display: inline-block;
-  background-color: #3b82f6;
+  background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
   color: white;
-  padding: 1rem 2.5rem;
-  border-radius: 8px;
+  padding: 1.25rem 3rem;
+  border-radius: 50px;
   text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary-link:hover {
-  background-color: #2563eb;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
   color: white;
 }
 
 /* Description Section */
 .description-section {
-  padding: 5rem 0;
-  background-color: #f8fafc;
+  padding: 8rem 0;
+  background: transparent;
   text-align: center;
 }
 
 .description-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-  color: #1e293b;
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  color: #ffffff;
+  font-weight: 800;
 }
 
 .description-section p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   max-width: 800px;
   margin: 0 auto;
-  color: #64748b;
+  color: var(--muted);
+  line-height: 1.8;
 }
 
 /* Services Section */
@@ -79,64 +107,47 @@
   text-align: center;
 }
 
-.services-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 3rem;
-  color: #1e293b;
-}
-
-.services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-}
-
 .service-card {
-  padding: 2.5rem;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease;
+  padding: 3rem;
+  border-radius: 1.5rem;
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .service-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-15px) rotate(2deg);
+  border-color: var(--accent-blue);
+  background: rgba(30, 41, 59, 0.6);
 }
 
 .service-card .icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  display: block;
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  filter: drop-shadow(0 0 10px var(--accent-blue));
 }
 
 .service-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   margin-bottom: 1rem;
-  color: #1e293b;
-}
-
-.service-card p {
-  color: #64748b;
+  color: #ffffff;
 }
 
 /* Login Section */
 .login-landing-section {
-  padding: 5rem 0;
-  background-color: #f1f5f9;
-}
-
-.login-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  padding: 8rem 0;
+  background: linear-gradient(transparent, rgba(76, 29, 149, 0.1));
 }
 
 .login-box {
-  background: white;
-  padding: 3rem;
-  border-radius: 16px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  text-align: center;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 4rem;
+  border-radius: 2rem;
+  border: 1px solid var(--accent-purple);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
 .login-box h2 {
