@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LandingNavbar from "../../components/LandingNavbar/LandingNavbar";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
 import Footer from "../../components/Footer/Footer";
+import { Link } from "react-router-dom";
 import "./Home.css";
 
 export default function Home() {
@@ -46,6 +47,9 @@ export default function Home() {
             Contamos con un equipo de profesionales apasionados y tecnología de punta para asegurar 
             el bienestar de cada animal que nos visita.
           </p>
+          <button onClick={() => navigate("/acerca-de")} className="btn-secondary-link" style={{ marginTop: "1.5rem", padding: "0.75rem 1.5rem", borderRadius: "0.5rem", border: "1px solid var(--primary-blue)", background: "transparent", color: "var(--primary-blue)", cursor: "pointer", fontWeight: "bold" }}>
+            Leer más sobre nosotros
+          </button>
         </div>
       </section>
 

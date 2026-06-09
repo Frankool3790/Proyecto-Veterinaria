@@ -1,13 +1,15 @@
 .sidebar {
-  background-color: #1e3a8a; /* Kaiser Blue */
+  background-color: var(--sidebar-bg);
   color: white;
   height: 100vh;
   position: sticky;
   top: 0;
   display: flex;
   flex-direction: column;
-  transition: all 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+              background-color var(--transition-speed) ease;
   z-index: 1000;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-header {

@@ -5,22 +5,8 @@ import Modal from "../../components/Modal/Modal";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { confirmDelete } from "../../utils/swalHelper";
-
-const columns = [
-  { header: "Fecha", field: "fecha", render: (val) => new Date(val).toLocaleDateString() },
-  { header: "Hora", field: "hora" },
-  { header: "Mascota", field: "mascotaName" },
-  { header: "Veterinario", field: "veterinarioName" },
-  { 
-    header: "Estado", 
-    field: "estado",
-    render: (val) => (
-      <span className={`status-badge status-${val?.toLowerCase()}`}>
-        {val}
-      </span>
-    )
-  },
-];
+import { formatTime } from "../../utils/formatters";
+import { useSearch } from "../../context/SearchContext";
 
 const initialForm = {
   fecha: "",
@@ -32,6 +18,7 @@ const initialForm = {
 };
 
 export default function Citas() {
+  const { searchTerm } = useSearch();
   const [citas, setCitas] = useState([]);
   const [mascotas, setMascotas] = useState([]);
   const [veterinarios, setVeterinarios] = useState([]);
@@ -39,6 +26,41 @@ export default function Citas() {
   const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
+
+  const columns = [
+    { header: "Fecha", field: "fecha", render: (val) => new Date(val).toLocaleDateString() },
+    { header: "Hora", field: "hora", render: (val) => formatTime(val) },
+    { header: "Mascota", field: "mascotaName" },
+    { header: "Veterinario", field: "veterinarioName" },
+    { 
+      header: "Estado", 
+      field: "estado",
+      render: (val, row) => (
+        <select 
+          value={val} 
+          onChange={(e) => handleUpdateStatus(row, e.target.value)}
+          className={`status-select status-${val?.toLowerCase()}`}
+          style={{
+            padding: '4px 8px',
+            borderRadius: '20px',
+            border: '1px solid currentColor',
+            fontSize: '12px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            textTransform: 'uppercase',
+            backgroundColor: 'transparent'
+          }}
+        >
+          <option value="Pendiente">Pendiente</option>
+          <option value="Solicitado">Solicitado</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="Pospuesto">Pospuesto</option>
+          <option value="Completado">Completado</option>
+          <option value="Cancelado">Cancelado</option>
+        </select>
+      )
+    },
+  ];
 
   useEffect(() => {
     loadCitas();
@@ -159,42 +181,38 @@ export default function Citas() {
     }
   };
 
-  const handleApprove = async (cita) => {
+  const handleUpdateStatus = async (cita, nuevoEstado) => {
     try {
       await api.put(`/citas/${cita.id}`, {
         ...cita,
-        estado: "Confirmado",
+        estado: nuevoEstado,
         mascotaId: cita.mascota_id,
         veterinarioId: cita.veterinario_id
       });
-      toast.success("Turno aprobado y fijado en calendario");
+      toast.success(`Turno marcado como ${nuevoEstado}`);
       await loadCitas();
     } catch (error) {
-      console.error("Error al aprobar turno:", error);
-      toast.error("Error al aprobar turno");
-    }
-  };
-
-  const handlePostpone = async (cita) => {
-    try {
-      await api.put(`/citas/${cita.id}`, {
-        ...cita,
-        estado: "Pospuesto",
-        mascotaId: cita.mascota_id,
-        veterinarioId: cita.veterinario_id
-      });
-      toast.success("Turno marcado como pospuesto");
-      await loadCitas();
-    } catch (error) {
-      console.error("Error al posponer turno:", error);
-      toast.error("Error al posponer turno");
+      console.error(`Error al cambiar estado a ${nuevoEstado}:`, error);
+      toast.error(`Error al cambiar estado a ${nuevoEstado}`);
     }
   };
 
   const mascotaMap = new Map(mascotas.map((item) => [item.id, item.nombre]));
   const vetMap = new Map(veterinarios.map((item) => [item.id, item.nombre]));
 
-  const displayCitas = citas.map((cita) => ({
+  const filteredCitas = citas.filter(cita => {
+    const search = searchTerm.toLowerCase();
+    const mascotaName = mascotaMap.get(cita.mascota_id)?.toLowerCase() || "";
+    const vetName = vetMap.get(cita.veterinario_id)?.toLowerCase() || "";
+    return (
+      mascotaName.includes(search) ||
+      vetName.includes(search) ||
+      cita.estado?.toLowerCase().includes(search) ||
+      cita.motivo?.toLowerCase().includes(search)
+    );
+  });
+
+  const displayCitas = filteredCitas.map((cita) => ({
     ...cita,
     mascotaName: mascotaMap.get(cita.mascota_id) || "Sin mascota",
     veterinarioName: vetMap.get(cita.veterinario_id) || "Sin veterinario",
@@ -206,10 +224,20 @@ export default function Citas() {
       { label: "Eliminar", variant: "danger", onClick: handleDelete },
     ];
 
+    // Botones de acción rápida según el estado actual
     if (row.estado === "Solicitado") {
       actions.unshift(
-        { label: "Aceptar", variant: "primary", onClick: handleApprove },
-        { label: "Posponer", variant: "warning", onClick: handlePostpone }
+        { label: "Aceptar", variant: "primary", onClick: (cita) => handleUpdateStatus(cita, "Confirmado") },
+        { label: "Posponer", variant: "warning", onClick: (cita) => handleUpdateStatus(cita, "Pospuesto") }
+      );
+    } else if (row.estado === "Confirmado" || row.estado === "Pendiente") {
+      actions.unshift(
+        { label: "Completar", variant: "primary", onClick: (cita) => handleUpdateStatus(cita, "Completado") },
+        { label: "Cancelar", variant: "warning", onClick: (cita) => handleUpdateStatus(cita, "Cancelado") }
+      );
+    } else if (row.estado === "Pospuesto") {
+      actions.unshift(
+        { label: "Confirmar", variant: "primary", onClick: (cita) => handleUpdateStatus(cita, "Confirmado") }
       );
     }
 
@@ -277,8 +305,8 @@ export default function Citas() {
               <option value="Solicitado">Solicitado (Por Cliente)</option>
               <option value="Confirmado">Confirmado</option>
               <option value="Pospuesto">Pospuesto</option>
-              <option value="Completada">Completada</option>
-              <option value="Cancelada">Cancelada</option>
+              <option value="Completado">Completado</option>
+              <option value="Cancelado">Cancelado</option>
             </select>
           </div>
           {error && <p className="error-message" style={{ gridColumn: "1 / -1" }}>{error}</p>}

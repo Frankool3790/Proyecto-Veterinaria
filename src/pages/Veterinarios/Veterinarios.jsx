@@ -3,6 +3,7 @@ import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import api from "../../services/api";
+import { useSearch } from "../../context/SearchContext";
 
 const columns = [
   { label: "Nombre", field: "nombre" },
@@ -17,6 +18,7 @@ const initialForm = {
 };
 
 export default function Veterinarios() {
+  const { searchTerm } = useSearch();
   const [veterinarios, setVeterinarios] = useState([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialForm);
@@ -103,6 +105,16 @@ export default function Veterinarios() {
     }
   };
 
+  const filteredVeterinarios = veterinarios.filter((vet) => {
+    const search = (searchTerm || "").toLowerCase();
+    return (
+      vet.nombre?.toLowerCase().includes(search) ||
+      vet.especialidad?.toLowerCase().includes(search) ||
+      vet.email?.toLowerCase().includes(search) ||
+      vet.telefono?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className="page-shell">
       <section className="page-header">
@@ -115,7 +127,7 @@ export default function Veterinarios() {
 
       <Table
         columns={columns}
-        data={veterinarios}
+        data={filteredVeterinarios}
         actions={[
           { label: "Editar", variant: "secondary", onClick: openEditModal },
           { label: "Eliminar", variant: "danger", onClick: handleDelete },

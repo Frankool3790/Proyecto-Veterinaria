@@ -6,6 +6,7 @@ import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { confirmDelete } from "../../utils/swalHelper";
+import { useSearch } from "../../context/SearchContext";
 
 const columns = [
   { 
@@ -34,6 +35,7 @@ const initialForm = {
 };
 
 export default function Clientes() {
+  const { searchTerm } = useSearch();
   const [clientes, setClientes] = useState([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialForm);
@@ -141,6 +143,16 @@ export default function Clientes() {
     }
   };
 
+  const filteredClientes = clientes.filter(cliente => {
+    const search = searchTerm.toLowerCase();
+    return (
+      cliente.nombre?.toLowerCase().includes(search) ||
+      cliente.email?.toLowerCase().includes(search) ||
+      cliente.telefono?.toLowerCase().includes(search) ||
+      cliente.direccion?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className="page-shell">
       <section className="page-header">
@@ -153,7 +165,7 @@ export default function Clientes() {
 
       <Table
         columns={columns}
-        data={clientes}
+        data={filteredClientes}
         actions={[
           { label: "Editar", variant: "secondary", onClick: openEditModal },
           { label: "Eliminar", variant: "danger", onClick: handleDelete },

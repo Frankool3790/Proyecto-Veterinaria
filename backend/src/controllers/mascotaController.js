@@ -31,25 +31,34 @@ export const mascotaController = {
 
   create: async (req, res, next) => {
     try {
-      const { nombre, especie, raza, edad, clienteId, fotoUrl } = req.body;
-      if (!nombre || !especie || !clienteId) {
-        return res.status(400).json({ error: 'Nombre, especie y clienteId son requeridos' });
+      const { nombre, especie, raza, edad, clienteId, cliente_id, fotoUrl, foto_url } = req.body;
+      const cId = clienteId || cliente_id;
+      const fUrl = fotoUrl || foto_url;
+
+      if (!nombre || !especie || !cId) {
+        return res.status(400).json({ error: 'Nombre, especie y dueño son requeridos' });
       }
-      const dto = new MascotaDTO(null, nombre, especie, raza, edad, clienteId, fotoUrl);
+
+      const dto = new MascotaDTO(null, nombre, especie, raza, edad, Number(cId), fUrl);
       const mascota = await mascotaService.create(dto);
       res.status(201).json(mascota);
     } catch (err) {
+      console.error("Error en mascotaController.create:", err);
       next(err);
     }
   },
 
   update: async (req, res, next) => {
     try {
-      const { nombre, especie, raza, edad, clienteId, fotoUrl } = req.body;
-      const dto = new MascotaDTO(req.params.id, nombre, especie, raza, edad, clienteId, fotoUrl);
+      const { nombre, especie, raza, edad, clienteId, cliente_id, fotoUrl, foto_url } = req.body;
+      const cId = clienteId || cliente_id;
+      const fUrl = fotoUrl || foto_url;
+
+      const dto = new MascotaDTO(req.params.id, nombre, especie, raza, edad, Number(cId), fUrl);
       const mascota = await mascotaService.update(dto);
       res.json(mascota);
     } catch (err) {
+      console.error("Error en mascotaController.update:", err);
       next(err);
     }
   },

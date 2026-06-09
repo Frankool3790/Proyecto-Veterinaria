@@ -5,8 +5,13 @@ import { createError } from '../utils/helpers.js';
 export const mascotaService = {
   findAll: () => {
     return new Promise((resolve, reject) => {
+      // Unimos con clientes para traer el nombre del dueño directamente si es necesario, 
+      // aunque el frontend lo hace con un Map, esto es más eficiente.
       db.all('SELECT * FROM mascotas', (err, rows) => {
-        if (err) return reject(createError(500, 'Error en BD'));
+        if (err) {
+          console.error("Error en findAll mascotas:", err);
+          return reject(createError(500, 'Error en BD'));
+        }
         resolve(rows || []);
       });
     });
@@ -41,28 +46,32 @@ export const mascotaService = {
 
   create: (dto) => {
     return new Promise((resolve, reject) => {
-      db.run(
-        'INSERT INTO mascotas (nombre, especie, raza, edad, cliente_id, foto_url) VALUES (?, ?, ?, ?, ?, ?)',
-        [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl],
-        function (err) {
-          if (err) return reject(createError(500, 'Error creando mascota'));
-          resolve(new MascotaDTO(this.lastID, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl));
+      const query = 'INSERT INTO mascotas (nombre, especie, raza, edad, cliente_id, foto_url) VALUES (?, ?, ?, ?, ?, ?)';
+      const params = [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl];
+      
+      db.run(query, params, function (err) {
+        if (err) {
+          console.error("Error en create mascota:", err);
+          return reject(createError(500, 'Error creando mascota en la base de datos'));
         }
-      );
+        resolve(new MascotaDTO(this.lastID, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl));
+      });
     });
   },
 
   update: (dto) => {
     return new Promise((resolve, reject) => {
-      db.run(
-        'UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, edad = ?, cliente_id = ?, foto_url = ? WHERE id = ?',
-        [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl, dto.id],
-        function (err) {
-          if (err) return reject(createError(500, 'Error actualizando mascota'));
-          if (this.changes === 0) return reject(createError(404, 'Mascota no encontrada'));
-          resolve(new MascotaDTO(dto.id, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl));
+      const query = 'UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, edad = ?, cliente_id = ?, foto_url = ? WHERE id = ?';
+      const params = [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl, dto.id];
+      
+      db.run(query, params, function (err) {
+        if (err) {
+          console.error("Error en update mascota:", err);
+          return reject(createError(500, 'Error actualizando mascota en la base de datos'));
         }
-      );
+        if (this.changes === 0) return reject(createError(404, 'Mascota no encontrada'));
+        resolve(new MascotaDTO(dto.id, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl));
+      });
     });
   },
 

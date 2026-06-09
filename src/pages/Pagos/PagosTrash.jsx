@@ -6,8 +6,10 @@ import toast from "react-hot-toast";
 import { confirmDelete } from "../../utils/swalHelper";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, RefreshCw, Trash2 } from "lucide-react";
+import { useSearch } from "../../context/SearchContext";
 
 export default function PagosTrash() {
+  const { searchTerm } = useSearch();
   const [pagos, setPagos] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ export default function PagosTrash() {
     try {
       setLoading(true);
       const response = await api.get("/pagos/trash");
-      setPagos(response.data);
+      setPagos(response.data || []);
     } catch (error) {
       console.error("Error al obtener papelera:", error);
       toast.error("Error al cargar la papelera");
@@ -58,11 +60,21 @@ export default function PagosTrash() {
     }
   };
 
-  const columns = [
-    { header: "Fecha", accessor: "fecha", render: (val) => new Date(val).toLocaleString() },
-    { header: "Cliente", accessor: "cliente_nombre" },
-    { header: "Monto", accessor: "monto", render: (val) => `$${Number(val).toLocaleString('es-CO')}` },
-    { header: "Método", accessor: "metodo_pago" }
+  const filteredPagos = pagos.filter(pago => {
+    const search = searchTerm.toLowerCase();
+    return (
+      pago.cliente_nombre?.toLowerCase().includes(search) ||
+      pago.metodo_pago?.toLowerCase().includes(search) ||
+      pago.descripcion?.toLowerCase().includes(search) ||
+      pago.monto?.toString().includes(search)
+    );
+  });
+
+  const tableColumns = [
+    { header: "Fecha", field: "fecha", render: (val) => new Date(val).toLocaleString() },
+    { header: "Cliente", field: "cliente_nombre" },
+    { header: "Monto", field: "monto", render: (val) => `$${Number(val).toLocaleString('es-CO')}` },
+    { header: "Método", field: "metodo_pago" }
   ];
 
   const actions = [
@@ -78,12 +90,6 @@ export default function PagosTrash() {
     }
   ];
 
-  const tableColumns = columns.map(col => ({
-    header: col.header,
-    field: col.accessor,
-    render: col.render
-  }));
-
   return (
     <div className="page-shell">
       <section className="page-header">
@@ -98,7 +104,7 @@ export default function PagosTrash() {
         </div>
       </section>
 
-      <Table columns={tableColumns} data={pagos} actions={actions} loading={loading} />
+      <Table columns={tableColumns} data={filteredPagos} actions={actions} loading={loading} />
     </div>
   );
 }

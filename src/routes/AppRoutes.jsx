@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import Home from "../pages/Home/Home";
+import AboutUs from "../pages/AboutUs/AboutUs";
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Clientes from "../pages/Clientes/Clientes";
@@ -23,6 +24,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/acerca-de" element={<AboutUs />} />
       <Route path="/login" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>

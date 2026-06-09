@@ -6,6 +6,7 @@ import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { confirmDelete } from "../../utils/swalHelper";
+import { useSearch } from "../../context/SearchContext";
 
 const columns = [
   { 
@@ -36,6 +37,7 @@ const initialForm = {
 };
 
 export default function Mascotas() {
+  const { searchTerm } = useSearch();
   const [mascotas, setMascotas] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [open, setOpen] = useState(false);
@@ -162,7 +164,19 @@ export default function Mascotas() {
   };
 
   const clienteMap = new Map(clientes.map((cliente) => [cliente.id, cliente.nombre]));
-  const displayMascotas = mascotas.map((mascota) => ({
+  
+  const filteredMascotas = mascotas.filter(mascota => {
+    const search = searchTerm.toLowerCase();
+    const ownerName = clienteMap.get(mascota.cliente_id)?.toLowerCase() || "";
+    return (
+      mascota.nombre?.toLowerCase().includes(search) ||
+      mascota.especie?.toLowerCase().includes(search) ||
+      mascota.raza?.toLowerCase().includes(search) ||
+      ownerName.includes(search)
+    );
+  });
+
+  const displayMascotas = filteredMascotas.map((mascota) => ({
     ...mascota,
     owner: clienteMap.get(mascota.cliente_id) || "Sin dueño",
   }));

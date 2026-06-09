@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Footer.css";
 
 export default function Footer() {
@@ -34,6 +35,7 @@ export default function Footer() {
             <li>Domingos y festivos: 10 am a 5 pm</li>
           </ul>
           <div className="footer-links">
+            <Link to="/acerca-de">› Acerca de Nosotros</Link>
             <a href="#">› Veterinaria Soacha</a>
             <a href="#">› Veterinaria de animales exóticos</a>
             <a href="#">› Trabaja con Nosotros</a>

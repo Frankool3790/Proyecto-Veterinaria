@@ -6,12 +6,15 @@ import "react-calendar/dist/Calendar.css";
 import "./ClientCitas.css";
 import { format, parseISO, isSameDay } from "date-fns";
 import { es } from "date-fns/locale";
+import { formatTime } from "../../utils/formatters";
+import { useSearch } from "../../context/SearchContext";
 
 export default function ClientCitas() {
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState(new Date());
   const { clienteId } = useAuth();
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     if (clienteId) {
@@ -40,7 +43,17 @@ export default function ClientCitas() {
     return null;
   };
 
-  const selectedDayCitas = citas.filter(cita => isSameDay(parseISO(cita.fecha), date));
+  const selectedDayCitas = citas.filter(cita => {
+    const isSameDate = isSameDay(parseISO(cita.fecha), date);
+    const search = searchTerm.toLowerCase();
+    const matchesSearch = 
+      cita.mascota_nombre?.toLowerCase().includes(search) ||
+      cita.veterinario_nombre?.toLowerCase().includes(search) ||
+      cita.motivo?.toLowerCase().includes(search) ||
+      cita.estado?.toLowerCase().includes(search);
+    
+    return isSameDate && matchesSearch;
+  });
 
   return (
     <div className="page-shell">
@@ -67,7 +80,7 @@ export default function ClientCitas() {
             <div className="citas-list">
               {selectedDayCitas.map(cita => (
                 <div key={cita.id} className="cita-card">
-                  <div className="cita-time">{cita.hora}</div>
+                  <div className="cita-time">{formatTime(cita.hora)}</div>
                   <div className="cita-info">
                     <div className="cita-header">
                       <strong>Mascota:</strong> {cita.mascota_nombre}

@@ -2,12 +2,18 @@ import "./Table.css";
 import Button from "../Button/Button";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { motion } from "framer-motion";
 
 export default function Table({ columns, data, actions = [], loading = false }) {
   const hasActions = Array.isArray(actions) && actions.length > 0;
 
   return (
-    <div className="table-card">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="table-card"
+    >
       <table>
         <thead>
           <tr>
@@ -71,6 +77,6 @@ export default function Table({ columns, data, actions = [], loading = false }) 
           )}
         </tbody>
       </table>
-    </div>
+    </motion.div>
   );
 }

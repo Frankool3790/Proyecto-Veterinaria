@@ -9,13 +9,41 @@
 }
 
 .modal-content {
-  width: min(92vw, 600px);
+  width: 92vw;
+  max-height: 90vh;
   background: #1e3a8a; /* Azul sólido oscuro (blue-900) */
   border-radius: 1rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  padding: 2.5rem;
+  padding: 1.5rem; /* Reducido un poco para dar más espacio al contenido */
   color: #ffffff; /* Texto blanco por defecto para el fondo azul */
   border: 1px solid #3b82f6; /* Borde azul brillante para definición */
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.5rem; /* Espacio para el scrollbar */
+}
+
+/* Scrollbar personalizado para el modal */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .modal-header h3 {

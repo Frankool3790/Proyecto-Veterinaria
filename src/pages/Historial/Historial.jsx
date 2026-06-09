@@ -5,6 +5,7 @@ import Modal from "../../components/Modal/Modal";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 import { confirmDelete } from "../../utils/swalHelper";
+import { useSearch } from "../../context/SearchContext";
 
 const columns = [
   { header: "Fecha", field: "fecha", render: (val) => new Date(val).toLocaleDateString() },
@@ -21,6 +22,7 @@ const initialForm = {
 };
 
 export default function Historial() {
+  const { searchTerm } = useSearch();
   const [historial, setHistorial] = useState([]);
   const [mascotas, setMascotas] = useState([]);
   const [open, setOpen] = useState(false);
@@ -115,7 +117,18 @@ export default function Historial() {
   };
 
   const mascotaMap = new Map(mascotas.map((mascota) => [mascota.id, mascota.nombre]));
-  const displayHistorial = historial.map((record) => ({
+  
+  const filteredHistorial = historial.filter(record => {
+    const search = searchTerm.toLowerCase();
+    const mascotaName = mascotaMap.get(record.mascota_id)?.toLowerCase() || "";
+    return (
+      record.descripcion?.toLowerCase().includes(search) ||
+      record.notas?.toLowerCase().includes(search) ||
+      mascotaName.includes(search)
+    );
+  });
+
+  const displayHistorial = filteredHistorial.map((record) => ({
     ...record,
     mascotaName: mascotaMap.get(record.mascota_id) || "Sin mascota",
   }));

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
 import Table from "../../components/Table/Table";
+import { useSearch } from "../../context/SearchContext";
 
 export default function ClientHistorial() {
   const [historial, setHistorial] = useState([]);
   const [loading, setLoading] = useState(true);
   const { clienteId } = useAuth();
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     if (clienteId) {
@@ -32,6 +34,15 @@ export default function ClientHistorial() {
     { header: "Notas", accessor: "notas" }
   ];
 
+  const filteredHistorial = historial.filter(record => {
+    const search = searchTerm.toLowerCase();
+    return (
+      record.mascota_nombre?.toLowerCase().includes(search) ||
+      record.descripcion?.toLowerCase().includes(search) ||
+      record.notas?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className="page-shell">
       <section className="page-header">
@@ -44,7 +55,7 @@ export default function ClientHistorial() {
       {loading ? (
         <p>Cargando historial...</p>
       ) : (
-        <Table columns={columns} data={historial} />
+        <Table columns={columns} data={filteredHistorial} />
       )}
     </div>
   );

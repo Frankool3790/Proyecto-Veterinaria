@@ -1,18 +1,33 @@
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { useSearch } from "../../context/SearchContext";
 import Button from "../Button/Button";
-import { Search, LogOut, Bell, User, Sun, Moon } from "lucide-react";
+import { Search, LogOut, Bell, User, Sun, Moon, X } from "lucide-react";
 import "./Navbar.css";
 
 export default function Navbar() {
   const { logout, user } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { searchTerm, setSearchTerm } = useSearch();
 
   return (
     <header className="topbar">
       <div className="topbar-search">
         <Search size={18} className="search-icon" />
-        <input type="text" placeholder="Buscar mascota, cliente o turno..." />
+        <input 
+          type="text" 
+          placeholder="Buscar..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <X 
+            size={16} 
+            className="clear-search" 
+            onClick={() => setSearchTerm("")} 
+            style={{ cursor: 'pointer', color: '#9ca3af' }}
+          />
+        )}
       </div>
       
       <div className="topbar-actions">

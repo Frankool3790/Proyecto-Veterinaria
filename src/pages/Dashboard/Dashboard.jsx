@@ -4,6 +4,8 @@ import Button from "../../components/Button/Button";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import api from "../../services/api";
+import { formatTime, getDayFromDate, getMonthFromDate } from "../../utils/formatters";
+import { motion } from "framer-motion";
 
 const weeklyData = [
   { name: "Lun", turnos: 4, mascotas: 2, clientes: 1 },
@@ -106,27 +108,51 @@ export default function Dashboard() {
 
   const cards = isAdmin ? adminCards : clientCards;
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 }
+  };
+
   return (
-    <div className="page-shell">
-      <section className="page-header">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="page-shell"
+    >
+      <motion.section variants={itemVariants} className="page-header">
         <div>
-          <h1 className="page-title">Bienvenido, {user?.nombre || user?.username}</h1>
-          <p className="page-copy">
-            {isAdmin 
-              ? "Resumen analítico de la actividad de la clínica." 
-              : "Consulta el estado de tus mascotas y tus próximos turnos."}
-          </p>
+          <h1 className="page-title">Bienvenido, {user?.nombre || 'Usuario'}</h1>
+          <p className="page-copy">Aquí tienes el resumen de lo que está pasando en la clínica hoy.</p>
         </div>
-        {isAdmin && <Button variant="primary">Nuevo turno</Button>}
-      </section>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <Button onClick={() => window.print()} variant="secondary">Descargar Reporte</Button>
+          {isAdmin && <Button onClick={() => window.location.href='/turnos'}>Gestionar Turnos</Button>}
+        </div>
+      </motion.section>
 
       <div className="stats-grid">
         {cards.map((card) => (
-          <article key={card.title} className="stat-card">
+          <motion.article 
+            key={card.title} 
+            variants={itemVariants}
+            whileHover={{ scale: 1.02, translateY: -5 }}
+            className="stat-card"
+          >
             <p className="stat-card-title">{card.title}</p>
             <p className="stat-card-value">{card.value}</p>
             <p className="page-copy" style={{ marginTop: "0.75rem", fontSize: "0.85rem" }}>{card.description}</p>
-          </article>
+          </motion.article>
         ))}
       </div>
 
@@ -199,13 +225,13 @@ export default function Dashboard() {
               }}>
                 <div style={{ textAlign: "center", borderRight: "2px solid rgba(59, 130, 246, 0.2)", paddingRight: "2rem" }}>
                   <p style={{ fontSize: "1rem", color: "var(--accent-blue)", fontWeight: "bold" }}>FECHA</p>
-                  <p style={{ fontSize: "2.5rem", fontWeight: "900", color: "var(--text)" }}>{nextCita.fecha.split("-")[2]}</p>
-                  <p style={{ fontSize: "1rem", color: "var(--text)" }}>{new Date(nextCita.fecha).toLocaleString('es-ES', { month: 'short' }).toUpperCase()}</p>
+                  <p style={{ fontSize: "2.5rem", fontWeight: "900", color: "var(--text)" }}>{getDayFromDate(nextCita.fecha)}</p>
+                  <p style={{ fontSize: "1rem", color: "var(--text)" }}>{getMonthFromDate(nextCita.fecha)}</p>
                 </div>
                 <div>
                   <h3 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>{nextCita.mascota_nombre}</h3>
                   <p className="page-copy"><strong>Veterinario:</strong> {nextCita.veterinario_nombre}</p>
-                  <p className="page-copy"><strong>Hora:</strong> {nextCita.hora}</p>
+                  <p className="page-copy"><strong>Hora:</strong> {formatTime(nextCita.hora)}</p>
                   <p className="page-copy" style={{ marginTop: "1rem", color: "var(--text)" }}>
                     <span style={{ color: "var(--accent-purple)" }}>Motivo:</span> {nextCita.motivo || "Consulta general"}
                   </p>
@@ -220,6 +246,6 @@ export default function Dashboard() {
           </div>
         )}
       </section>
-    </div>
+    </motion.div>
   );
 }

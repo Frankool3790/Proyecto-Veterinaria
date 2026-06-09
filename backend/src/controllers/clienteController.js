@@ -22,25 +22,29 @@ export const clienteController = {
 
   create: async (req, res, next) => {
     try {
-      const { nombre, telefono, email, direccion } = req.body;
+      const { nombre, telefono, email, direccion, avatarUrl, avatar_url } = req.body;
+      const aUrl = avatarUrl || avatar_url;
       if (!nombre) {
         return res.status(400).json({ error: 'El nombre es requerido' });
       }
-      const dto = new ClienteDTO(null, nombre, telefono, email, direccion);
+      const dto = new ClienteDTO(null, nombre, telefono, email, direccion, aUrl);
       const cliente = await clienteService.create(dto);
       res.status(201).json(cliente);
     } catch (err) {
+      console.error("Error en clienteController.create:", err);
       next(err);
     }
   },
 
   update: async (req, res, next) => {
     try {
-      const { nombre, telefono, email, direccion } = req.body;
-      const dto = new ClienteDTO(req.params.id, nombre, telefono, email, direccion);
+      const { nombre, telefono, email, direccion, avatarUrl, avatar_url } = req.body;
+      const aUrl = avatarUrl || avatar_url;
+      const dto = new ClienteDTO(req.params.id, nombre, telefono, email, direccion, aUrl);
       const cliente = await clienteService.update(dto);
       res.json(cliente);
     } catch (err) {
+      console.error("Error en clienteController.update:", err);
       next(err);
     }
   },

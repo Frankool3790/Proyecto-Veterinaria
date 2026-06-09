@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import { AuthProvider } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { SearchProvider } from "./context/SearchContext";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
@@ -11,9 +12,11 @@ import "./index.css";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ThemeProvider>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <SearchProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </SearchProvider>
     </ThemeProvider>
   </BrowserRouter>
 );

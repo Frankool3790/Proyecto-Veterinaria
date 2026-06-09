@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
 import Table from "../../components/Table/Table";
+import { useSearch } from "../../context/SearchContext";
 
 export default function ClientMascotas() {
   const [mascotas, setMascotas] = useState([]);
   const [loading, setLoading] = useState(true);
   const { clienteId } = useAuth();
+  const { searchTerm } = useSearch();
 
   useEffect(() => {
     if (clienteId) {
@@ -32,6 +34,15 @@ export default function ClientMascotas() {
     { header: "Edad", accessor: "edad" }
   ];
 
+  const filteredMascotas = mascotas.filter(mascota => {
+    const search = searchTerm.toLowerCase();
+    return (
+      mascota.nombre?.toLowerCase().includes(search) ||
+      mascota.especie?.toLowerCase().includes(search) ||
+      mascota.raza?.toLowerCase().includes(search)
+    );
+  });
+
   return (
     <div className="page-shell">
       <section className="page-header">
@@ -44,7 +55,7 @@ export default function ClientMascotas() {
       {loading ? (
         <p>Cargando mascotas...</p>
       ) : (
-        <Table columns={columns} data={mascotas} />
+        <Table columns={columns} data={filteredMascotas} />
       )}
     </div>
   );

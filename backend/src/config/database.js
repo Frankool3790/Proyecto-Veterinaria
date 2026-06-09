@@ -183,9 +183,15 @@ export const initializeDatabase = async () => {
         nombre VARCHAR(255) NOT NULL,
         telefono VARCHAR(50),
         email VARCHAR(255) UNIQUE,
-        direccion VARCHAR(255)
+        direccion VARCHAR(255),
+        avatar_url TEXT
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+
+    // Intentar agregar columna avatar_url si ya existe la tabla clientes en MySQL
+    try {
+      await connection.query("ALTER TABLE clientes ADD COLUMN avatar_url TEXT");
+    } catch (e) {}
 
     await connection.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
@@ -209,9 +215,15 @@ export const initializeDatabase = async () => {
         raza VARCHAR(255),
         edad INT,
         cliente_id INT,
+        foto_url TEXT,
         FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+
+    // Intentar agregar columna foto_url si ya existe la tabla mascotas en MySQL
+    try {
+      await connection.query("ALTER TABLE mascotas ADD COLUMN foto_url TEXT");
+    } catch (e) {}
 
     await connection.query(`
       CREATE TABLE IF NOT EXISTS veterinarios (
