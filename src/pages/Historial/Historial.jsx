@@ -3,12 +3,14 @@ import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import { confirmDelete } from "../../utils/swalHelper";
 
 const columns = [
-  { label: "Fecha", field: "fecha" },
-  { label: "Mascota", field: "mascotaName" },
-  { label: "Procedimiento", field: "descripcion" },
-  { label: "Notas", field: "notas" },
+  { header: "Fecha", field: "fecha", render: (val) => new Date(val).toLocaleDateString() },
+  { header: "Mascota", field: "mascotaName" },
+  { header: "Procedimiento", field: "descripcion" },
+  { header: "Notas", field: "notas" },
 ];
 
 const initialForm = {
@@ -84,23 +86,31 @@ export default function Historial() {
         mascotaId: Number(form.mascotaId),
       });
       await loadHistorial();
+      toast.success("Registro guardado correctamente");
       closeModal();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Error guardando el registro de historial.");
+      const errorMsg = err.response?.data?.error || "Error guardando el registro de historial.";
+      toast.error(errorMsg);
+      setError(errorMsg);
     }
   };
 
   const handleDelete = async (record) => {
-    const confirmed = window.confirm(`Eliminar registro del ${record.fecha}?`);
-    if (!confirmed) return;
-
-    try {
-      await api.delete(`/historial/${record.id}`);
-      await loadHistorial();
-    } catch (err) {
-      console.error(err);
-      setError("No se pudo eliminar el historial.");
+    const result = await confirmDelete(
+      '¿Eliminar registro?',
+      `Se eliminará el registro del ${new Date(record.fecha).toLocaleDateString()}`
+    );
+    
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/historial/${record.id}`);
+        await loadHistorial();
+        toast.success("Registro eliminado");
+      } catch (err) {
+        console.error(err);
+        toast.error("No se pudo eliminar el registro");
+      }
     }
   };
 

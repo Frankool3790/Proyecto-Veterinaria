@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PAYMENT_METHODS = [
   { id: "PSE", name: "PSE", icon: "🏦", url: "https://www.pse.com.co/persona" },
@@ -29,6 +30,40 @@ export default function NuevoPago() {
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [mascotas, setMascotas] = useState([]);
+  const [veterinarios, setVeterinarios] = useState([]);
+  const [citaForm, setCitaForm] = useState({
+    fecha: "",
+    hora: "",
+    motivo: "",
+    mascotaId: "",
+    veterinarioId: "",
+  });
+
+  useEffect(() => {
+    if (clienteId) {
+      fetchMascotas();
+      fetchVeterinarios();
+    }
+  }, [clienteId]);
+
+  const fetchMascotas = async () => {
+    try {
+      const response = await api.get(`/mascotas/cliente/${clienteId}`);
+      setMascotas(response.data);
+    } catch (error) {
+      console.error("Error al obtener mascotas:", error);
+    }
+  };
+
+  const fetchVeterinarios = async () => {
+    try {
+      const response = await api.get("/veterinarios");
+      setVeterinarios(response.data);
+    } catch (error) {
+      console.error("Error al obtener veterinarios:", error);
+    }
+  };
 
   const formatCOP = (value) => {
     return new Intl.NumberFormat('es-CO', {
@@ -41,7 +76,6 @@ export default function NuevoPago() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "monto") {
-      // Evitar valores negativos
       const val = Math.max(0, parseFloat(value) || 0);
       setFormData(prev => ({ ...prev, [name]: val }));
     } else {
@@ -49,52 +83,74 @@ export default function NuevoPago() {
     }
   };
 
+  const handleCitaChange = (e) => {
+    const { name, value } = e.target;
+    setCitaForm(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.monto <= 0) {
-      alert("El monto debe ser mayor a 0 COP");
+      toast.error("El monto debe ser mayor a 0 COP");
       return;
     }
 
     setLoading(true);
     const selectedMethod = PAYMENT_METHODS.find(m => m.id === formData.metodo_pago);
 
-    if (selectedMethod?.url) {
-      setRedirecting(true);
-      setTimeout(async () => {
-        try {
-          await api.post("/pagos", {
-            cliente_id: clienteId,
-            monto: formData.monto,
-            metodo_pago: selectedMethod.name,
-            descripcion: formData.descripcion
-          });
-          setRedirecting(false);
-          setShowSuccess(true);
-          window.open(selectedMethod.url, "_blank");
-        } catch (error) {
-          console.error("Error:", error);
-          alert("Error al procesar el pago");
-          setRedirecting(false);
-        } finally {
-          setLoading(false);
-        }
-      }, 2000);
-    } else {
+    const processPayment = async () => {
       try {
         await api.post("/pagos", {
           cliente_id: clienteId,
           monto: formData.monto,
           metodo_pago: selectedMethod.name,
-          descripcion: formData.descripcion
+          descripcion: formData.descripcion,
+          estado: 'Aprobado'
         });
         setShowSuccess(true);
+        toast.success("Pago procesado correctamente");
       } catch (error) {
         console.error("Error:", error);
-        alert("Error al procesar el pago");
+        toast.error("Error al procesar el pago");
       } finally {
         setLoading(false);
       }
+    };
+
+    if (selectedMethod?.url) {
+      setRedirecting(true);
+      setTimeout(async () => {
+        await processPayment();
+        setRedirecting(false);
+        window.open(selectedMethod.url, "_blank");
+      }, 2000);
+    } else {
+      await processPayment();
+    }
+  };
+
+  const handleSolicitarTurno = async (e) => {
+    e.preventDefault();
+    if (!citaForm.fecha || !citaForm.hora || !citaForm.mascotaId || !citaForm.veterinarioId) {
+      toast.error("Todos los campos son obligatorios");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await api.post("/citas", {
+        ...citaForm,
+        estado: "Solicitado", // Nuevo estado para aprobación del admin
+        mascotaId: Number(citaForm.mascotaId),
+        veterinarioId: Number(citaForm.veterinarioId)
+      });
+      toast.success("Turno solicitado correctamente. Pendiente de aprobación.");
+      navigate("/mis-turnos");
+    } catch (error) {
+      console.error("Error al solicitar turno:", error);
+      toast.error("Error al solicitar el turno");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,10 +165,10 @@ export default function NuevoPago() {
         </div>
       </section>
 
-      <div className="stat-card" style={{ maxWidth: "700px", margin: "0 auto", padding: "2.5rem" }}>
+      <div className="stat-card" style={{ maxWidth: "800px", margin: "0 auto", padding: "2.5rem", overflow: "hidden" }}>
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "2rem" }}>
             {/* Columna Izquierda: Datos Básicos */}
             <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -125,7 +181,7 @@ export default function NuevoPago() {
                   onChange={handleInputChange}
                   placeholder="Ej: 50000"
                   required
-                  style={{ padding: "0.8rem", borderRadius: "0.5rem", border: "1px solid var(--accent-blue)", background: "rgba(15, 23, 42, 0.6)", color: "white" }}
+                  style={{ width: "100%", padding: "0.8rem", borderRadius: "0.5rem", border: "1px solid var(--accent-blue)", background: "rgba(15, 23, 42, 0.6)", color: "white" }}
                 />
                 <span style={{ fontSize: "0.85rem", color: "var(--accent-blue)" }}>
                   Total: {formatCOP(formData.monto || 0)}
@@ -148,11 +204,12 @@ export default function NuevoPago() {
                         display: "flex",
                         alignItems: "center",
                         gap: "0.5rem",
-                        fontSize: "0.85rem"
+                        fontSize: "0.85rem",
+                        overflow: "hidden"
                       }}
                     >
                       <span>{method.icon}</span>
-                      <span style={{ fontWeight: "600" }}>{method.name}</span>
+                      <span style={{ fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{method.name}</span>
                     </div>
                   ))}
                 </div>
@@ -160,25 +217,25 @@ export default function NuevoPago() {
             </div>
 
             {/* Columna Derecha: Datos de Tarjeta (Condicional) */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem", minWidth: "0" }}>
               {isCardSelected ? (
-                <div style={{ background: "rgba(59, 130, 246, 0.1)", padding: "1.5rem", borderRadius: "1rem", border: "1px dashed var(--accent-blue)" }}>
+                <div style={{ background: "rgba(59, 130, 246, 0.1)", padding: "1.5rem", borderRadius: "1rem", border: "1px dashed var(--accent-blue)", width: "100%" }}>
                   <h3 style={{ fontSize: "1rem", marginBottom: "1rem", color: "white" }}>Datos de la Tarjeta</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}>
                     <input
                       type="text"
                       name="cardNumber"
-                      placeholder="Número de Tarjeta (16 dígitos)"
+                      placeholder="Número de Tarjeta"
                       maxLength="16"
                       required
-                      style={{ padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
+                      style={{ width: "100%", padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
                     />
                     <input
                       type="text"
                       name="cardHolder"
                       placeholder="Nombre del Titular"
                       required
-                      style={{ padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
+                      style={{ width: "100%", padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
                     />
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                       <input
@@ -187,7 +244,7 @@ export default function NuevoPago() {
                         placeholder="MM/AA"
                         maxLength="5"
                         required
-                        style={{ padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
+                        style={{ width: "100%", padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
                       />
                       <input
                         type="password"
@@ -195,7 +252,7 @@ export default function NuevoPago() {
                         placeholder="CVV"
                         maxLength="3"
                         required
-                        style={{ padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
+                        style={{ width: "100%", padding: "0.6rem", borderRadius: "0.4rem", border: "1px solid var(--accent-blue)", background: "white", color: "#1e293b" }}
                       />
                     </div>
                   </div>
@@ -239,13 +296,95 @@ export default function NuevoPago() {
         </Modal>
       )}
 
-      {/* Modal Éxito */}
+      {/* Modal Éxito y Solicitud de Turno */}
       {showSuccess && (
         <Modal open={showSuccess} title="¡Pago Confirmado!" onClose={() => setShowSuccess(false)}>
-          <div style={{ textAlign: "center", padding: "1.5rem" }}>
-            <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>✅</div>
-            <p style={{ marginBottom: "1.5rem" }}>Tu pago de <strong>{formatCOP(formData.monto)}</strong> ha sido procesado exitosamente.</p>
-            <Button onClick={() => navigate("/mis-turnos")} variant="primary" style={{ width: "100%" }}>Gestionar Mis Turnos</Button>
+          <div style={{ padding: "1rem" }}>
+            <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+              <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>✅</div>
+              <p>Tu pago de <strong>{formatCOP(formData.monto)}</strong> ha sido procesado exitosamente.</p>
+              <p style={{ color: "var(--accent-purple)", fontWeight: "bold", marginTop: "1rem" }}>¡Ya puedes solicitar tu turno!</p>
+            </div>
+
+            <form onSubmit={handleSolicitarTurno} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+                  <label style={{ fontSize: "0.85rem" }}>Fecha</label>
+                  <input 
+                    type="date" 
+                    name="fecha" 
+                    value={citaForm.fecha} 
+                    onChange={handleCitaChange} 
+                    required 
+                    style={{ padding: "0.5rem", borderRadius: "0.4rem", border: "1px solid #ddd" }}
+                  />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+                  <label style={{ fontSize: "0.85rem" }}>Hora</label>
+                  <input 
+                    type="time" 
+                    name="hora" 
+                    value={citaForm.hora} 
+                    onChange={handleCitaChange} 
+                    required 
+                    style={{ padding: "0.5rem", borderRadius: "0.4rem", border: "1px solid #ddd" }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+                <label style={{ fontSize: "0.85rem" }}>Mascota</label>
+                <select 
+                  name="mascotaId" 
+                  value={citaForm.mascotaId} 
+                  onChange={handleCitaChange} 
+                  required
+                  style={{ padding: "0.5rem", borderRadius: "0.4rem", border: "1px solid #ddd" }}
+                >
+                  <option value="">Selecciona tu mascota</option>
+                  {mascotas.map(m => (
+                    <option key={m.id} value={m.id}>{m.nombre}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+                <label style={{ fontSize: "0.85rem" }}>Veterinario de preferencia</label>
+                <select 
+                  name="veterinarioId" 
+                  value={citaForm.veterinarioId} 
+                  onChange={handleCitaChange} 
+                  required
+                  style={{ padding: "0.5rem", borderRadius: "0.4rem", border: "1px solid #ddd" }}
+                >
+                  <option value="">Cualquier veterinario</option>
+                  {veterinarios.map(v => (
+                    <option key={v.id} value={v.id}>{v.nombre} - {v.especialidad}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+                <label style={{ fontSize: "0.85rem" }}>Motivo de consulta</label>
+                <textarea 
+                  name="motivo" 
+                  value={citaForm.motivo} 
+                  onChange={handleCitaChange} 
+                  rows="2"
+                  placeholder="Ej: Vacunación, Control..."
+                  style={{ padding: "0.5rem", borderRadius: "0.4rem", border: "1px solid #ddd" }}
+                ></textarea>
+              </div>
+
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                <Button type="submit" variant="primary" style={{ flex: 1 }} disabled={loading}>
+                  {loading ? "Solicitando..." : "Solicitar Turno Ahora"}
+                </Button>
+                <Button type="button" variant="secondary" onClick={() => navigate("/mis-turnos")} style={{ flex: 1 }}>
+                  Hacerlo más tarde
+                </Button>
+              </div>
+            </form>
           </div>
         </Modal>
       )}

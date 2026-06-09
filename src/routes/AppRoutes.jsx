@@ -15,6 +15,7 @@ import ClientCitas from "../pages/Client/ClientCitas";
 import ClientHistorial from "../pages/Client/ClientHistorial";
 import NuevoPago from "../pages/Client/NuevoPago";
 import PagosAdmin from "../pages/Pagos/PagosAdmin";
+import PagosTrash from "../pages/Pagos/PagosTrash";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -36,6 +37,7 @@ function AppRoutes() {
           <Route path="/veterinarios" element={<Veterinarios />} />
           <Route path="/historial" element={<Historial />} />
           <Route path="/pagos" element={<PagosAdmin />} />
+          <Route path="/pagos/papelera" element={<PagosTrash />} />
 
           {/* Rutas Cliente */}
           <Route path="/mis-mascotas" element={<ClientMascotas />} />

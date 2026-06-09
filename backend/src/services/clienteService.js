@@ -29,11 +29,11 @@ export const clienteService = {
   create: (dto) => {
     return new Promise((resolve, reject) => {
       db.run(
-        'INSERT INTO clientes (nombre, telefono, email, direccion) VALUES (?, ?, ?, ?)',
-        [dto.nombre, dto.telefono, dto.email, dto.direccion],
+        'INSERT INTO clientes (nombre, telefono, email, direccion, avatar_url) VALUES (?, ?, ?, ?, ?)',
+        [dto.nombre, dto.telefono, dto.email, dto.direccion, dto.avatarUrl],
         function (err) {
           if (err) return reject(createError(500, 'Error creando cliente'));
-          resolve(new ClienteDTO(this.lastID, dto.nombre, dto.telefono, dto.email, dto.direccion));
+          resolve(new ClienteDTO(this.lastID, dto.nombre, dto.telefono, dto.email, dto.direccion, dto.avatarUrl));
         }
       );
     });
@@ -42,12 +42,12 @@ export const clienteService = {
   update: (dto) => {
     return new Promise((resolve, reject) => {
       db.run(
-        'UPDATE clientes SET nombre = ?, telefono = ?, email = ?, direccion = ? WHERE id = ?',
-        [dto.nombre, dto.telefono, dto.email, dto.direccion, dto.id],
+        'UPDATE clientes SET nombre = ?, telefono = ?, email = ?, direccion = ?, avatar_url = ? WHERE id = ?',
+        [dto.nombre, dto.telefono, dto.email, dto.direccion, dto.avatarUrl, dto.id],
         function (err) {
           if (err) return reject(createError(500, 'Error actualizando cliente'));
           if (this.changes === 0) return reject(createError(404, 'Cliente no encontrado'));
-          resolve(new ClienteDTO(dto.id, dto.nombre, dto.telefono, dto.email, dto.direccion));
+          resolve(new ClienteDTO(dto.id, dto.nombre, dto.telefono, dto.email, dto.direccion, dto.avatarUrl));
         }
       );
     });

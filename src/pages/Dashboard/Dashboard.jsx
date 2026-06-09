@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, Legend } from "recharts";
 import Button from "../../components/Button/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import api from "../../services/api";
 
 const weeklyData = [
@@ -16,6 +17,7 @@ const weeklyData = [
 
 export default function Dashboard() {
   const { isAdmin, isClient, clienteId, user } = useAuth();
+  const { isDark } = useTheme();
   const [stats, setStats] = useState({
     mascotas: 0,
     turnos: 0,
@@ -24,13 +26,25 @@ export default function Dashboard() {
     veterinarios: 0
   });
   const [nextCita, setNextCita] = useState(null);
+  const [postponedCitas, setPostponedCitas] = useState([]);
 
   useEffect(() => {
     fetchStats();
     if (isClient && clienteId) {
       fetchNextCita();
+      fetchPostponedCitas();
     }
   }, [isAdmin, isClient, clienteId]);
+
+  const fetchPostponedCitas = async () => {
+    try {
+      const response = await api.get(`/citas/cliente/${clienteId}`);
+      const postponed = response.data.filter(c => c.estado === "Pospuesto");
+      setPostponedCitas(postponed);
+    } catch (error) {
+      console.error("Error al cargar citas pospuestas:", error);
+    }
+  };
 
   const fetchStats = async () => {
     try {
@@ -67,8 +81,9 @@ export default function Dashboard() {
   const fetchNextCita = async () => {
     try {
       const response = await api.get(`/citas/cliente/${clienteId}`);
+      // Consideramos "Pendiente", "Solicitado" o "Confirmado" como próximas citas
       const upcoming = response.data
-        .filter(c => c.estado === "Pendiente")
+        .filter(c => ["Pendiente", "Solicitado", "Confirmado"].includes(c.estado))
         .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))[0];
       setNextCita(upcoming);
     } catch (error) {
@@ -115,10 +130,30 @@ export default function Dashboard() {
         ))}
       </div>
 
+      {isClient && postponedCitas.length > 0 && (
+        <section style={{ marginTop: "1.5rem" }}>
+          <div className="stat-card" style={{ border: "1px solid var(--kaiser-rose)", background: "rgba(190, 24, 93, 0.1)" }}>
+            <h2 style={{ color: "var(--kaiser-rose)", fontSize: "1.2rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              ⚠️ Turnos Pospuestos
+            </h2>
+            <p className="page-copy" style={{ marginTop: "0.5rem" }}>
+              Tienes {postponedCitas.length} turno(s) que han sido pospuestos por la clínica. Por favor, revisa los detalles o contacta con nosotros.
+            </p>
+            <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+              {postponedCitas.map(cita => (
+                <div key={cita.id} style={{ fontSize: "0.9rem", padding: "0.5rem", background: "rgba(255,255,255,0.05)", borderRadius: "0.4rem" }}>
+                  <strong>{cita.mascota_nombre}</strong>: {new Date(cita.fecha).toLocaleDateString()} a las {cita.hora}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <section style={{ marginTop: "1.5rem" }}>
         {isAdmin ? (
           <div className="stat-card overview-chart" style={{ height: "400px", padding: "2rem" }}>
-            <h2 style={{ marginBottom: "2rem", color: "#ffffff" }}>Actividad Semanal</h2>
+            <h2 style={{ marginBottom: "2rem", color: "var(--text)" }}>Actividad Semanal</h2>
             <ResponsiveContainer width="100%" height="85%">
               <AreaChart data={weeklyData}>
                 <defs>
@@ -131,12 +166,16 @@ export default function Dashboard() {
                     <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(148, 163, 184, 0.1)" />
-                <XAxis dataKey="name" stroke="#94a3b8" />
-                <YAxis stroke="#94a3b8" />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "rgba(148, 163, 184, 0.1)" : "rgba(0, 0, 0, 0.05)"} />
+                <XAxis dataKey="name" stroke="var(--muted)" />
+                <YAxis stroke="var(--muted)" />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #3b82f6", borderRadius: "8px" }}
-                  itemStyle={{ color: "#ffffff" }}
+                  contentStyle={{ 
+                    backgroundColor: "var(--surface)", 
+                    border: `1px solid ${isDark ? "#3b82f6" : "#e2e8f0"}`, 
+                    borderRadius: "8px" 
+                  }}
+                  itemStyle={{ color: "var(--text)" }}
                 />
                 <Legend />
                 <Area type="monotone" dataKey="turnos" stroke="#3b82f6" fillOpacity={1} fill="url(#colorTurnos)" />
@@ -146,7 +185,7 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="stat-card overview-chart" style={{ padding: "2rem" }}>
-            <h2 style={{ marginBottom: "1.5rem", color: "#ffffff" }}>Próximo Turno Destacado</h2>
+            <h2 style={{ marginBottom: "1.5rem", color: "var(--text)" }}>Próximo Turno Destacado</h2>
             {nextCita ? (
               <div className="cita-destacada" style={{ 
                 background: "rgba(59, 130, 246, 0.1)", 
@@ -160,14 +199,14 @@ export default function Dashboard() {
               }}>
                 <div style={{ textAlign: "center", borderRight: "2px solid rgba(59, 130, 246, 0.2)", paddingRight: "2rem" }}>
                   <p style={{ fontSize: "1rem", color: "var(--accent-blue)", fontWeight: "bold" }}>FECHA</p>
-                  <p style={{ fontSize: "2.5rem", fontWeight: "900" }}>{nextCita.fecha.split("-")[2]}</p>
-                  <p style={{ fontSize: "1rem" }}>{new Date(nextCita.fecha).toLocaleString('es-ES', { month: 'short' }).toUpperCase()}</p>
+                  <p style={{ fontSize: "2.5rem", fontWeight: "900", color: "var(--text)" }}>{nextCita.fecha.split("-")[2]}</p>
+                  <p style={{ fontSize: "1rem", color: "var(--text)" }}>{new Date(nextCita.fecha).toLocaleString('es-ES', { month: 'short' }).toUpperCase()}</p>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>{nextCita.mascota_nombre}</h3>
+                  <h3 style={{ fontSize: "1.5rem", marginBottom: "0.5rem", color: "var(--text)" }}>{nextCita.mascota_nombre}</h3>
                   <p className="page-copy"><strong>Veterinario:</strong> {nextCita.veterinario_nombre}</p>
                   <p className="page-copy"><strong>Hora:</strong> {nextCita.hora}</p>
-                  <p className="page-copy" style={{ marginTop: "1rem", color: "#ffffff" }}>
+                  <p className="page-copy" style={{ marginTop: "1rem", color: "var(--text)" }}>
                     <span style={{ color: "var(--accent-purple)" }}>Motivo:</span> {nextCita.motivo || "Consulta general"}
                   </p>
                 </div>

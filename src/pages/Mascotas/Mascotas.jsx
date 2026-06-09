@@ -2,14 +2,28 @@ import { useEffect, useState } from "react";
 import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import { confirmDelete } from "../../utils/swalHelper";
 
 const columns = [
-  { label: "Mascota", field: "nombre" },
-  { label: "Tipo", field: "especie" },
-  { label: "Raza", field: "raza" },
-  { label: "Edad", field: "edad" },
-  { label: "Dueño", field: "owner" },
+  { 
+    header: "Foto", 
+    field: "foto_url", 
+    render: (val) => (
+      <img 
+        src={val ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3002'}${val}` : '/favicon.svg'} 
+        alt="Pet" 
+        style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} 
+      />
+    )
+  },
+  { header: "Mascota", field: "nombre" },
+  { header: "Tipo", field: "especie" },
+  { header: "Raza", field: "raza" },
+  { header: "Edad", field: "edad" },
+  { header: "Dueño", field: "owner" },
 ];
 
 const initialForm = {
@@ -18,6 +32,7 @@ const initialForm = {
   raza: "",
   edad: "",
   clienteId: "",
+  fotoUrl: "",
 };
 
 export default function Mascotas() {
@@ -71,6 +86,7 @@ export default function Mascotas() {
       raza: mascota.raza || "",
       edad: mascota.edad || "",
       clienteId: mascota.cliente_id || mascota.clienteId || "",
+      fotoUrl: mascota.foto_url || mascota.fotoUrl || "",
     });
     setEditingId(mascota.id);
     setOpen(true);
@@ -102,36 +118,46 @@ export default function Mascotas() {
         raza: form.raza,
         edad: form.edad ? Number(form.edad) : null,
         clienteId: Number(form.clienteId),
+        fotoUrl: form.fotoUrl,
       };
 
       if (editingId) {
         await api.put(`/mascotas/${editingId}`, payload);
+        toast.success("Mascota actualizada correctamente");
       } else {
         await api.post("/mascotas", payload);
+        toast.success("Mascota registrada correctamente");
       }
       await loadMascotas();
       closeModal();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Error guardando la mascota.");
+      const errorMsg = err.response?.data?.error || "Error al procesar la mascota.";
+      toast.error(errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (mascota) => {
-    const confirmed = window.confirm(`Eliminar a ${mascota.nombre}?`);
-    if (!confirmed) return;
+    const result = await confirmDelete(
+      '¿Eliminar mascota?',
+      `Se eliminará a ${mascota.nombre} permanentemente.`
+    );
 
-    try {
-      setLoading(true);
-      await api.delete(`/mascotas/${mascota.id}`);
-      await loadMascotas();
-    } catch (err) {
-      console.error(err);
-      setError("No se pudo eliminar la mascota.");
-    } finally {
-      setLoading(false);
+    if (result.isConfirmed) {
+      try {
+        setLoading(true);
+        await api.delete(`/mascotas/${mascota.id}`);
+        await loadMascotas();
+        toast.success("Mascota eliminada");
+      } catch (err) {
+        console.error(err);
+        toast.error("No se pudo eliminar la mascota");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -193,6 +219,11 @@ export default function Mascotas() {
               ))}
             </select>
           </div>
+          <ImageUpload 
+            label="Foto de la Mascota"
+            currentImage={form.fotoUrl}
+            onUploadSuccess={(url) => setForm(prev => ({ ...prev, fotoUrl: url }))}
+          />
           {error && <p className="form-error">{error}</p>}
           <Button type="submit" variant="primary">{editingId ? "Actualizar mascota" : "Guardar mascota"}</Button>
         </form>

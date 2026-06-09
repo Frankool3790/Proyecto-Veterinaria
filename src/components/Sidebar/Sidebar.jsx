@@ -1,60 +1,65 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { 
+  LayoutDashboard, 
+  Users, 
+  Dog, 
+  Calendar, 
+  Stethoscope, 
+  History, 
+  CreditCard,
+  X
+} from "lucide-react";
 import "./Sidebar.css";
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }) {
   const { isAdmin, isClient } = useAuth();
 
-  return (
-    <aside className="sidebar">
-      <div className="sidebar-logo">San Hyuga</div>
-      <nav className="sidebar-nav">
-        {isAdmin && (
-          <>
-            <NavLink to="/dashboard" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} end>
-              Dashboard Admin
-            </NavLink>
-            <NavLink to="/clientes" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Dueños
-            </NavLink>
-            <NavLink to="/mascotas" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Mascotas
-            </NavLink>
-            <NavLink to="/turnos" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Turnos
-            </NavLink>
-            <NavLink to="/veterinarios" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Veterinarios
-            </NavLink>
-            <NavLink to="/historial" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Historial
-            </NavLink>
-            <NavLink to="/pagos" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Pagos
-            </NavLink>
-          </>
-        )}
+  const links = isAdmin ? [
+    { to: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
+    { to: "/clientes", label: "Dueños", icon: <Users size={20} /> },
+    { to: "/mascotas", label: "Mascotas", icon: <Dog size={20} /> },
+    { to: "/turnos", label: "Turnos", icon: <Calendar size={20} /> },
+    { to: "/veterinarios", label: "Veterinarios", icon: <Stethoscope size={20} /> },
+    { to: "/historial", label: "Historial", icon: <History size={20} /> },
+    { to: "/pagos", label: "Pagos", icon: <CreditCard size={20} /> },
+  ] : [
+    { to: "/dashboard", label: "Mi Panel", icon: <LayoutDashboard size={20} /> },
+    { to: "/mis-mascotas", label: "Mis Mascotas", icon: <Dog size={20} /> },
+    { to: "/nuevo-pago", label: "Nuevo Pago", icon: <CreditCard size={20} /> },
+    { to: "/mis-turnos", label: "Mis Turnos", icon: <Calendar size={20} /> },
+    { to: "/mi-historial", label: "Mi Historial", icon: <History size={20} /> },
+  ];
 
-        {isClient && (
-          <>
-            <NavLink to="/dashboard" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} end>
-              Mi Panel
+  return (
+    <>
+      <div className={`sidebar-overlay ${isOpen ? "open" : ""}`} onClick={onClose}></div>
+      <aside className={`sidebar ${isOpen ? "open" : ""}`}>
+        <div className="sidebar-header">
+          <div className="sidebar-logo">
+            <Dog size={28} className="logo-icon" />
+            <span>San Hyuga</span>
+          </div>
+          <button className="sidebar-close" onClick={onClose}>
+            <X size={24} />
+          </button>
+        </div>
+        
+        <nav className="sidebar-nav">
+          {links.map((link) => (
+            <NavLink 
+              key={link.to} 
+              to={link.to} 
+              className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"} 
+              onClick={onClose}
+              end={link.to === "/dashboard"}
+            >
+              {link.icon}
+              <span>{link.label}</span>
             </NavLink>
-            <NavLink to="/mis-mascotas" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Mis Mascotas
-            </NavLink>
-            <NavLink to="/nuevo-pago" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Nuevo Pago
-            </NavLink>
-            <NavLink to="/mis-turnos" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Mis Turnos
-            </NavLink>
-            <NavLink to="/mi-historial" className={({ isActive }) => isActive ? "sidebar-link active" : "sidebar-link"}>
-              Mi Historial
-            </NavLink>
-          </>
-        )}
-      </nav>
-    </aside>
+          ))}
+        </nav>
+      </aside>
+    </>
   );
 }

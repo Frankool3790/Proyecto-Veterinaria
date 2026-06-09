@@ -42,11 +42,11 @@ export const mascotaService = {
   create: (dto) => {
     return new Promise((resolve, reject) => {
       db.run(
-        'INSERT INTO mascotas (nombre, especie, raza, edad, cliente_id) VALUES (?, ?, ?, ?, ?)',
-        [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId],
+        'INSERT INTO mascotas (nombre, especie, raza, edad, cliente_id, foto_url) VALUES (?, ?, ?, ?, ?, ?)',
+        [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl],
         function (err) {
           if (err) return reject(createError(500, 'Error creando mascota'));
-          resolve(new MascotaDTO(this.lastID, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId));
+          resolve(new MascotaDTO(this.lastID, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl));
         }
       );
     });
@@ -55,12 +55,12 @@ export const mascotaService = {
   update: (dto) => {
     return new Promise((resolve, reject) => {
       db.run(
-        'UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, edad = ?, cliente_id = ? WHERE id = ?',
-        [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.id],
+        'UPDATE mascotas SET nombre = ?, especie = ?, raza = ?, edad = ?, cliente_id = ?, foto_url = ? WHERE id = ?',
+        [dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl, dto.id],
         function (err) {
           if (err) return reject(createError(500, 'Error actualizando mascota'));
           if (this.changes === 0) return reject(createError(404, 'Mascota no encontrada'));
-          resolve(new MascotaDTO(dto.id, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId));
+          resolve(new MascotaDTO(dto.id, dto.nombre, dto.especie, dto.raza, dto.edad, dto.clienteId, dto.fotoUrl));
         }
       );
     });

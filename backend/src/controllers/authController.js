@@ -21,5 +21,15 @@ export const authController = {
     } catch (err) {
       next(err);
     }
+  },
+
+  updateProfile: async (req, res, next) => {
+    try {
+      const { id, nombre, apellido, email, password, cliente_id, telefono, direccion } = req.body;
+      const response = await authService.updateProfile({ id, nombre, apellido, email, password, cliente_id, telefono, direccion });
+      res.json(response);
+    } catch (err) {
+      next(err);
+    }
   }
 };

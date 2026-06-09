@@ -31,11 +31,11 @@ export const mascotaController = {
 
   create: async (req, res, next) => {
     try {
-      const { nombre, especie, raza, edad, clienteId } = req.body;
+      const { nombre, especie, raza, edad, clienteId, fotoUrl } = req.body;
       if (!nombre || !especie || !clienteId) {
         return res.status(400).json({ error: 'Nombre, especie y clienteId son requeridos' });
       }
-      const dto = new MascotaDTO(null, nombre, especie, raza, edad, clienteId);
+      const dto = new MascotaDTO(null, nombre, especie, raza, edad, clienteId, fotoUrl);
       const mascota = await mascotaService.create(dto);
       res.status(201).json(mascota);
     } catch (err) {
@@ -45,8 +45,8 @@ export const mascotaController = {
 
   update: async (req, res, next) => {
     try {
-      const { nombre, especie, raza, edad, clienteId } = req.body;
-      const dto = new MascotaDTO(req.params.id, nombre, especie, raza, edad, clienteId);
+      const { nombre, especie, raza, edad, clienteId, fotoUrl } = req.body;
+      const dto = new MascotaDTO(req.params.id, nombre, especie, raza, edad, clienteId, fotoUrl);
       const mascota = await mascotaService.update(dto);
       res.json(mascota);
     } catch (err) {

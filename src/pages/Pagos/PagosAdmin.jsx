@@ -2,12 +2,16 @@ import React, { useState, useEffect } from "react";
 import api from "../../services/api";
 import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import { generatePaymentPDF } from "../../utils/pdfGenerator";
+import toast from "react-hot-toast";
+import { confirmDelete } from "../../utils/swalHelper";
+import { useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 
 export default function PagosAdmin() {
   const [pagos, setPagos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPagos();
@@ -15,70 +19,56 @@ export default function PagosAdmin() {
 
   const fetchPagos = async () => {
     try {
+      setLoading(true);
       const response = await api.get("/pagos");
       setPagos(response.data);
     } catch (error) {
       console.error("Error al obtener pagos:", error);
+      toast.error("Error al cargar los pagos");
     } finally {
       setLoading(false);
     }
   };
 
-  const generatePDF = (pago) => {
-    const doc = new jsPDF();
-    
-    // Configuración estética del PDF
-    doc.setFillColor(30, 58, 138); // Blue-900
-    doc.rect(0, 0, 210, 40, 'F');
-    
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
-    doc.text("CERTIFICADO DE PAGO", 105, 25, { align: "center" });
-    
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(12);
-    doc.text(`Fecha de Emisión: ${new Date().toLocaleDateString()}`, 150, 50);
-    
-    doc.setFont("helvetica", "bold");
-    doc.text("Detalles del Cliente:", 20, 70);
-    doc.setFont("helvetica", "normal");
-    doc.text(`Nombre: ${pago.cliente_nombre || 'N/A'}`, 20, 80);
-    doc.text(`ID de Pago: #PAG-${pago.id}`, 20, 90);
-    
-    doc.autoTable({
-      startY: 110,
-      head: [['Descripción', 'Método', 'Fecha', 'Monto']],
-      body: [[
-        pago.descripcion || 'Servicios Veterinarios',
-        pago.metodo_pago,
-        new Date(pago.fecha).toLocaleDateString(),
-        `$${pago.monto.toFixed(2)}`
-      ]],
-      headStyles: { fillColor: [76, 29, 149] }, // Ness Purple
-    });
-    
-    const finalY = doc.lastAutoTable.finalY + 30;
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.text(`TOTAL PAGADO: $${pago.monto.toFixed(2)}`, 140, finalY);
-    
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Gracias por confiar en Veterinaria San Hyuga", 105, 280, { align: "center" });
-    
-    doc.save(`Certificado_Pago_${pago.id}.pdf`);
+  const handleDownloadPDF = (pago) => {
+    try {
+      generatePaymentPDF(pago);
+      toast.success("PDF generado correctamente");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Error al generar el PDF. Verifica los datos del pago.");
+    }
+  };
+
+  const handleDelete = async (pago) => {
+    const result = await confirmDelete(
+      '¿Mover a la papelera?',
+      `El registro de pago de ${pago.cliente_nombre} se moverá a la papelera.`
+    );
+
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/pagos/soft/${pago.id}`);
+        toast.success("Movido a la papelera");
+        fetchPagos();
+      } catch (error) {
+        console.error("Error deleting payment:", error);
+        toast.error("No se pudo eliminar el registro");
+      }
+    }
   };
 
   const columns = [
-    { header: "Fecha", accessor: "fecha", render: (val) => new Date(val).toLocaleDateString() },
+    { header: "Fecha", accessor: "fecha", render: (val) => new Date(val).toLocaleString() },
     { header: "Cliente", accessor: "cliente_nombre" },
-    { header: "Monto", accessor: "monto", render: (val) => `$${val.toFixed(2)}` },
+    { header: "Monto", accessor: "monto", render: (val) => `$${Number(val).toLocaleString('es-CO')}` },
     { header: "Método", accessor: "metodo_pago" },
     { header: "Descripción", accessor: "descripcion" }
   ];
 
   const actions = [
-    { label: "Descargar PDF", variant: "primary", onClick: (row) => generatePDF(row) }
+    { label: "Descargar PDF", variant: "primary", onClick: (row) => handleDownloadPDF(row) },
+    { label: "Eliminar", variant: "danger", onClick: (row) => handleDelete(row) }
   ];
 
   // Ajuste para el componente Table que usa 'field' en lugar de 'accessor' a veces
@@ -94,13 +84,13 @@ export default function PagosAdmin() {
           <h1 className="page-title">Gestión de Pagos</h1>
           <p className="page-copy">Revisa los ingresos y genera certificados para los clientes.</p>
         </div>
+        <Button variant="secondary" onClick={() => navigate("/pagos/papelera")} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <Trash2 size={18} />
+          Ver Papelera
+        </Button>
       </section>
 
-      {loading ? (
-        <p>Cargando registros de pagos...</p>
-      ) : (
-        <Table columns={tableColumns} data={pagos} actions={actions} />
-      )}
+      <Table columns={tableColumns} data={pagos} actions={actions} loading={loading} />
     </div>
   );
 }

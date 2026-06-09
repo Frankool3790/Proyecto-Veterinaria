@@ -37,7 +37,8 @@ const createSQLiteDatabase = () => {
         nombre TEXT NOT NULL,
         telefono TEXT,
         email TEXT UNIQUE,
-        direccion TEXT
+        direccion TEXT,
+        avatar_url TEXT
       )
     `);
 
@@ -49,9 +50,14 @@ const createSQLiteDatabase = () => {
         raza TEXT,
         edad INTEGER,
         cliente_id INTEGER,
+        foto_url TEXT,
         FOREIGN KEY (cliente_id) REFERENCES clientes(id)
       )
     `);
+
+    // Intentar agregar columnas si ya existen las tablas
+    sqliteDb.run("ALTER TABLE clientes ADD COLUMN avatar_url TEXT", (err) => {});
+    sqliteDb.run("ALTER TABLE mascotas ADD COLUMN foto_url TEXT", (err) => {});
 
     sqliteDb.run(`
       CREATE TABLE IF NOT EXISTS veterinarios (
@@ -86,6 +92,23 @@ const createSQLiteDatabase = () => {
         FOREIGN KEY (mascota_id) REFERENCES mascotas(id)
       )
     `);
+
+    sqliteDb.run(`
+      CREATE TABLE IF NOT EXISTS pagos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cliente_id INTEGER,
+        monto REAL NOT NULL,
+        metodo_pago TEXT,
+        estado TEXT DEFAULT 'Completado',
+        fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+        descripcion TEXT,
+        is_deleted INTEGER DEFAULT 0,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+      )
+    `);
+
+    // Intentar agregar columna is_deleted si ya existe la tabla pagos
+    sqliteDb.run("ALTER TABLE pagos ADD COLUMN is_deleted INTEGER DEFAULT 0", (err) => {});
 
     sqliteDb.run(`
       INSERT OR IGNORE INTO usuarios (username, password, roles)
@@ -208,9 +231,15 @@ export const initializeDatabase = async () => {
         estado VARCHAR(50) DEFAULT 'Completado',
         fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
         descripcion TEXT,
+        is_deleted TINYINT(1) DEFAULT 0,
         FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+
+    // Intentar agregar columna is_deleted si ya existe la tabla pagos en MySQL
+    try {
+      await connection.query("ALTER TABLE pagos ADD COLUMN is_deleted TINYINT(1) DEFAULT 0");
+    } catch (e) {}
 
     await connection.query(`
       CREATE TABLE IF NOT EXISTS citas (

@@ -10,6 +10,42 @@ export const pagoController = {
     }
   },
 
+  getTrash: async (req, res, next) => {
+    try {
+      const pagos = await pagoService.findTrash();
+      res.json(pagos);
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  softDelete: async (req, res, next) => {
+    try {
+      await pagoService.softDelete(req.params.id);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  restore: async (req, res, next) => {
+    try {
+      await pagoService.restore(req.params.id);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  hardDelete: async (req, res, next) => {
+    try {
+      await pagoService.hardDelete(req.params.id);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
+
   getByClienteId: async (req, res, next) => {
     try {
       const pagos = await pagoService.findByClienteId(req.params.clienteId);

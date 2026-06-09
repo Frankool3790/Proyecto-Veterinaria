@@ -1,7 +1,9 @@
 import "./Table.css";
 import Button from "../Button/Button";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
-export default function Table({ columns, data, actions = [] }) {
+export default function Table({ columns, data, actions = [], loading = false }) {
   const hasActions = Array.isArray(actions) && actions.length > 0;
 
   return (
@@ -18,7 +20,22 @@ export default function Table({ columns, data, actions = [] }) {
           </tr>
         </thead>
         <tbody>
-          {data.length === 0 ? (
+          {loading ? (
+            Array(5).fill(0).map((_, rowIndex) => (
+              <tr key={`skeleton-${rowIndex}`}>
+                {columns.map((_, colIndex) => (
+                  <td key={`skeleton-col-${colIndex}`}>
+                    <Skeleton height={20} />
+                  </td>
+                ))}
+                {hasActions && (
+                  <td>
+                    <Skeleton height={30} width={80} />
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : data.length === 0 ? (
             <tr>
               <td colSpan={columns.length + (hasActions ? 1 : 0)} className="empty-row">
                 No hay registros disponibles.
@@ -29,9 +46,10 @@ export default function Table({ columns, data, actions = [] }) {
               <tr key={row.id || rowIndex}>
                 {columns.map((column, colIndex) => {
                   const key = column.accessor || column.field;
+                  const value = row[key];
                   return (
                     <td key={`${row.id || rowIndex}-${key || colIndex}`}>
-                      {row[key]}
+                      {column.render ? column.render(value, row) : value}
                     </td>
                   );
                 })}

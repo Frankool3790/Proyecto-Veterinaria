@@ -3,13 +3,23 @@ import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import { confirmDelete } from "../../utils/swalHelper";
 
 const columns = [
-  { label: "Fecha", field: "fecha" },
-  { label: "Hora", field: "hora" },
-  { label: "Mascota", field: "mascotaName" },
-  { label: "Veterinario", field: "veterinarioName" },
-  { label: "Estado", field: "estado" },
+  { header: "Fecha", field: "fecha", render: (val) => new Date(val).toLocaleDateString() },
+  { header: "Hora", field: "hora" },
+  { header: "Mascota", field: "mascotaName" },
+  { header: "Veterinario", field: "veterinarioName" },
+  { 
+    header: "Estado", 
+    field: "estado",
+    render: (val) => (
+      <span className={`status-badge status-${val?.toLowerCase()}`}>
+        {val}
+      </span>
+    )
+  },
 ];
 
 const initialForm = {
@@ -102,7 +112,7 @@ export default function Citas() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!form.fecha || !form.hora || !form.mascotaId || !form.veterinarioId) {
-      setError("Fecha, hora, mascota y veterinario son obligatorios.");
+      toast.error("Fecha, hora, mascota y veterinario son obligatorios.");
       return;
     }
 
@@ -118,27 +128,66 @@ export default function Citas() {
 
       if (editingId) {
         await api.put(`/citas/${editingId}`, payload);
+        toast.success("Turno actualizado correctamente");
       } else {
         await api.post("/citas", payload);
+        toast.success("Turno creado correctamente");
       }
       await loadCitas();
       closeModal();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Error guardando el turno.");
+      toast.error(err.response?.data?.error || "Error guardando el turno.");
     }
   };
 
   const handleDelete = async (cita) => {
-    const confirmed = window.confirm(`Eliminar turno del ${cita.fecha} a las ${cita.hora}?`);
-    if (!confirmed) return;
+    const result = await confirmDelete(
+      '¿Eliminar turno?',
+      `Se eliminará el turno del ${new Date(cita.fecha).toLocaleDateString()} a las ${cita.hora}`
+    );
+    
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/citas/${cita.id}`);
+        await loadCitas();
+        toast.success("Turno eliminado");
+      } catch (err) {
+        console.error(err);
+        toast.error("No se pudo eliminar el turno.");
+      }
+    }
+  };
 
+  const handleApprove = async (cita) => {
     try {
-      await api.delete(`/citas/${cita.id}`);
+      await api.put(`/citas/${cita.id}`, {
+        ...cita,
+        estado: "Confirmado",
+        mascotaId: cita.mascota_id,
+        veterinarioId: cita.veterinario_id
+      });
+      toast.success("Turno aprobado y fijado en calendario");
       await loadCitas();
-    } catch (err) {
-      console.error(err);
-      setError("No se pudo eliminar el turno.");
+    } catch (error) {
+      console.error("Error al aprobar turno:", error);
+      toast.error("Error al aprobar turno");
+    }
+  };
+
+  const handlePostpone = async (cita) => {
+    try {
+      await api.put(`/citas/${cita.id}`, {
+        ...cita,
+        estado: "Pospuesto",
+        mascotaId: cita.mascota_id,
+        veterinarioId: cita.veterinario_id
+      });
+      toast.success("Turno marcado como pospuesto");
+      await loadCitas();
+    } catch (error) {
+      console.error("Error al posponer turno:", error);
+      toast.error("Error al posponer turno");
     }
   };
 
@@ -150,6 +199,22 @@ export default function Citas() {
     mascotaName: mascotaMap.get(cita.mascota_id) || "Sin mascota",
     veterinarioName: vetMap.get(cita.veterinario_id) || "Sin veterinario",
   }));
+
+  const getActions = (row) => {
+    const actions = [
+      { label: "Editar", variant: "secondary", onClick: openEditModal },
+      { label: "Eliminar", variant: "danger", onClick: handleDelete },
+    ];
+
+    if (row.estado === "Solicitado") {
+      actions.unshift(
+        { label: "Aceptar", variant: "primary", onClick: handleApprove },
+        { label: "Posponer", variant: "warning", onClick: handlePostpone }
+      );
+    }
+
+    return actions;
+  };
 
   return (
     <div className="page-shell">
@@ -164,10 +229,7 @@ export default function Citas() {
       <Table
         columns={columns}
         data={displayCitas}
-        actions={[
-          { label: "Editar", variant: "secondary", onClick: openEditModal },
-          { label: "Eliminar", variant: "danger", onClick: handleDelete },
-        ]}
+        actions={getActions}
       />
 
       <Modal open={open} title={editingId ? "Editar turno" : "Nuevo turno"} onClose={closeModal}>
@@ -212,6 +274,9 @@ export default function Citas() {
             <label>Estado</label>
             <select name="estado" value={form.estado} onChange={handleChange}>
               <option value="Pendiente">Pendiente</option>
+              <option value="Solicitado">Solicitado (Por Cliente)</option>
+              <option value="Confirmado">Confirmado</option>
+              <option value="Pospuesto">Pospuesto</option>
               <option value="Completada">Completada</option>
               <option value="Cancelada">Cancelada</option>
             </select>

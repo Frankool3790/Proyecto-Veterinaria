@@ -2,13 +2,27 @@ import { useEffect, useState } from "react";
 import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import { confirmDelete } from "../../utils/swalHelper";
 
 const columns = [
-  { label: "Nombre", field: "nombre" },
-  { label: "Teléfono", field: "telefono" },
-  { label: "Email", field: "email" },
-  { label: "Dirección", field: "direccion" },
+  { 
+    header: "Avatar", 
+    field: "avatar_url", 
+    render: (val) => (
+      <img 
+        src={val ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3002'}${val}` : '/favicon.svg'} 
+        alt="Avatar" 
+        style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} 
+      />
+    )
+  },
+  { header: "Nombre", field: "nombre" },
+  { header: "Teléfono", field: "telefono" },
+  { header: "Email", field: "email" },
+  { header: "Dirección", field: "direccion" },
 ];
 
 const initialForm = {
@@ -16,6 +30,7 @@ const initialForm = {
   telefono: "",
   email: "",
   direccion: "",
+  avatarUrl: "",
 };
 
 export default function Clientes() {
@@ -60,6 +75,7 @@ export default function Clientes() {
       telefono: cliente.telefono || "",
       email: cliente.email || "",
       direccion: cliente.direccion || "",
+      avatarUrl: cliente.avatar_url || cliente.avatarUrl || "",
     });
     setEditingId(cliente.id);
     setOpen(true);
@@ -87,32 +103,41 @@ export default function Clientes() {
       setLoading(true);
       if (editingId) {
         await api.put(`/clientes/${editingId}`, form);
+        toast.success("Dueño actualizado");
       } else {
         await api.post("/clientes", form);
+        toast.success("Dueño registrado");
       }
       await loadClientes();
       closeModal();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Error guardando el dueño.");
+      const errorMsg = err.response?.data?.error || "Error guardando el dueño.";
+      toast.error(errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (cliente) => {
-    const confirmed = window.confirm(`Eliminar al dueño ${cliente.nombre}?`);
-    if (!confirmed) return;
+    const result = await confirmDelete(
+      '¿Eliminar dueño?',
+      `Se eliminará a ${cliente.nombre} y sus mascotas permanentemente.`
+    );
 
-    try {
-      setLoading(true);
-      await api.delete(`/clientes/${cliente.id}`);
-      await loadClientes();
-    } catch (err) {
-      console.error(err);
-      setError("No se pudo eliminar el dueño.");
-    } finally {
-      setLoading(false);
+    if (result.isConfirmed) {
+      try {
+        setLoading(true);
+        await api.delete(`/clientes/${cliente.id}`);
+        await loadClientes();
+        toast.success("Dueño eliminado");
+      } catch (err) {
+        console.error(err);
+        toast.error("No se pudo eliminar el dueño");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -153,6 +178,11 @@ export default function Clientes() {
             <label>Dirección</label>
             <input name="direccion" type="text" value={form.direccion} onChange={handleChange} placeholder="Calle, número, ciudad" />
           </div>
+          <ImageUpload 
+            label="Avatar del Cliente"
+            currentImage={form.avatarUrl}
+            onUploadSuccess={(url) => setForm(prev => ({ ...prev, avatarUrl: url }))}
+          />
           {error && <p className="form-error">{error}</p>}
           <Button type="submit" variant="primary">{editingId ? "Actualizar dueño" : "Guardar dueño"}</Button>
         </form>
