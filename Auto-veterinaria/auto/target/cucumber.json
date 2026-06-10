@@ -1,0 +1,183 @@
+[
+  {
+    "line": 3,
+    "elements": [
+      {
+        "line": 22,
+        "name": "Registro exitoso de cliente nuevo",
+        "description": "",
+        "id": "registro-de-usuario-veterinaria;registro-exitoso-de-cliente-nuevo;;2",
+        "type": "scenario",
+        "keyword": "Esquema del escenario",
+        "steps": [
+          {
+            "result": {
+              "error_message": "java.lang.NullPointerException\r\n\tat net.serenitybdd.screenplay.actors.OnStage.anActorIsOnStage(OnStage.java:41)\r\n\tat net.serenitybdd.screenplay.actors.OnStage.theActorCalled(OnStage.java:32)\r\n\tat co.com.veterinaria.stepdefinitions.VeterinariaStepDefinitions.decidirRegistrarse(VeterinariaStepDefinitions.java:138)\r\n\tat ✽.el usuario decide registrarse desde la página principal(src/test/resources/features/veterinaria/05_RegistroCliente.feature:13)\r\n",
+              "duration": 412908800,
+              "status": "failed"
+            },
+            "line": 13,
+            "name": "el usuario decide registrarse desde la página principal",
+            "match": {
+              "location": "VeterinariaStepDefinitions.decidirRegistrarse()"
+            },
+            "keyword": "Cuando "
+          },
+          {
+            "result": {
+              "status": "skipped"
+            },
+            "line": 14,
+            "name": "completa el formulario de registro con sus datos personales",
+            "match": {
+              "location": "VeterinariaStepDefinitions.completarFormularioRegistro(String,String\u003e\u003e)"
+            },
+            "rows": [
+              {
+                "cells": [
+                  "nombre",
+                  "apellido",
+                  "email",
+                  "password"
+                ]
+              },
+              {
+                "cells": [
+                  "Juan",
+                  "Perez",
+                  "juanperez@mail.com",
+                  "12345678"
+                ]
+              }
+            ],
+            "keyword": "Y "
+          },
+          {
+            "result": {
+              "status": "skipped"
+            },
+            "line": 17,
+            "name": "el sistema debería crear su cuenta satisfactoriamente",
+            "match": {
+              "location": "VeterinariaStepDefinitions.validarCreacionCuenta()"
+            },
+            "keyword": "Entonces "
+          },
+          {
+            "result": {
+              "status": "skipped"
+            },
+            "line": 18,
+            "name": "mostrar el mensaje de confirmación \"Registro exitoso\"",
+            "match": {
+              "arguments": [
+                {
+                  "val": "Registro exitoso",
+                  "offset": 36
+                }
+              ],
+              "location": "VeterinariaStepDefinitions.mostrarMensajeConfirmacion(String)"
+            },
+            "keyword": "Y "
+          }
+        ],
+        "tags": [
+          {
+            "name": "@registro_cliente"
+          }
+        ]
+      },
+      {
+        "line": 23,
+        "name": "Registro exitoso de cliente nuevo",
+        "description": "",
+        "id": "registro-de-usuario-veterinaria;registro-exitoso-de-cliente-nuevo;;3",
+        "type": "scenario",
+        "keyword": "Esquema del escenario",
+        "steps": [
+          {
+            "result": {
+              "error_message": "java.lang.NullPointerException\r\n\tat net.serenitybdd.screenplay.actors.OnStage.anActorIsOnStage(OnStage.java:41)\r\n\tat net.serenitybdd.screenplay.actors.OnStage.theActorCalled(OnStage.java:32)\r\n\tat co.com.veterinaria.stepdefinitions.VeterinariaStepDefinitions.decidirRegistrarse(VeterinariaStepDefinitions.java:138)\r\n\tat ✽.el usuario decide registrarse desde la página principal(src/test/resources/features/veterinaria/05_RegistroCliente.feature:13)\r\n",
+              "duration": 12679700,
+              "status": "failed"
+            },
+            "line": 13,
+            "name": "el usuario decide registrarse desde la página principal",
+            "match": {
+              "location": "VeterinariaStepDefinitions.decidirRegistrarse()"
+            },
+            "keyword": "Cuando "
+          },
+          {
+            "result": {
+              "status": "skipped"
+            },
+            "line": 14,
+            "name": "completa el formulario de registro con sus datos personales",
+            "match": {
+              "location": "VeterinariaStepDefinitions.completarFormularioRegistro(String,String\u003e\u003e)"
+            },
+            "rows": [
+              {
+                "cells": [
+                  "nombre",
+                  "apellido",
+                  "email",
+                  "password"
+                ]
+              },
+              {
+                "cells": [
+                  "Maria",
+                  "Lopez",
+                  "marialopez@mail.com",
+                  "password123"
+                ]
+              }
+            ],
+            "keyword": "Y "
+          },
+          {
+            "result": {
+              "status": "skipped"
+            },
+            "line": 17,
+            "name": "el sistema debería crear su cuenta satisfactoriamente",
+            "match": {
+              "location": "VeterinariaStepDefinitions.validarCreacionCuenta()"
+            },
+            "keyword": "Entonces "
+          },
+          {
+            "result": {
+              "status": "skipped"
+            },
+            "line": 18,
+            "name": "mostrar el mensaje de confirmación \"Registro exitoso\"",
+            "match": {
+              "arguments": [
+                {
+                  "val": "Registro exitoso",
+                  "offset": 36
+                }
+              ],
+              "location": "VeterinariaStepDefinitions.mostrarMensajeConfirmacion(String)"
+            },
+            "keyword": "Y "
+          }
+        ],
+        "tags": [
+          {
+            "name": "@registro_cliente"
+          }
+        ]
+      }
+    ],
+    "name": "Registro de usuario veterinaria",
+    "description": "  Como cliente nuevo\n  Quiero registrarme en el sistema\n  Para acceder a los servicios de la veterinaria\n\n  Antecedente:\n    Dado que el usuario navega al sitio web de la veterinaria",
+    "id": "registro-de-usuario-veterinaria",
+    "keyword": "Característica",
+    "uri": "src/test/resources/features/veterinaria/05_RegistroCliente.feature",
+    "tags": []
+  }
+]
