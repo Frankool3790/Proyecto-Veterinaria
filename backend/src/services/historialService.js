@@ -59,11 +59,27 @@ export const historialService = {
   create: (dto) => {
     return new Promise((resolve, reject) => {
       db.run(
-        'INSERT INTO historial_clinico (descripcion, fecha, notas, mascota_id) VALUES (?, ?, ?, ?)',
-        [dto.descripcion, dto.fecha, dto.notas, dto.mascotaId],
+        `INSERT INTO historial_clinico 
+         (fecha, motivo_consulta, peso, temperatura, diagnostico, tratamiento, medicamentos, observaciones, notas_privadas, veterinario_id, mascota_id, cerrado) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [dto.fecha, dto.motivoConsulta, dto.peso, dto.temperatura, dto.diagnostico, dto.tratamiento, dto.medicamentos, dto.observaciones, dto.notasPrivadas, dto.veterinarioId, dto.mascotaId, dto.cerrado ? 1 : 0],
         function (err) {
-          if (err) return reject(createError(500, 'Error creando historial'));
-          resolve(new HistorialDTO(this.lastID, dto.mascotaId, dto.descripcion, dto.fecha, dto.notas));
+          if (err) return reject(createError(500, 'Error creando historial: ' + err.message));
+          resolve(new HistorialDTO(
+            this.lastID, 
+            dto.mascotaId, 
+            dto.fecha, 
+            dto.motivoConsulta, 
+            dto.peso, 
+            dto.temperatura, 
+            dto.diagnostico, 
+            dto.tratamiento, 
+            dto.medicamentos, 
+            dto.observaciones, 
+            dto.notasPrivadas, 
+            dto.veterinarioId,
+            dto.cerrado
+          ));
         }
       );
     });
@@ -72,12 +88,39 @@ export const historialService = {
   update: (dto) => {
     return new Promise((resolve, reject) => {
       db.run(
-        'UPDATE historial_clinico SET descripcion = ?, fecha = ?, notas = ?, mascota_id = ? WHERE id = ?',
-        [dto.descripcion, dto.fecha, dto.notas, dto.mascotaId, dto.id],
+        `UPDATE historial_clinico SET 
+          fecha = ?, 
+          motivo_consulta = ?, 
+          peso = ?, 
+          temperatura = ?, 
+          diagnostico = ?, 
+          tratamiento = ?, 
+          medicamentos = ?, 
+          observaciones = ?, 
+          notas_privadas = ?, 
+          veterinario_id = ?, 
+          mascota_id = ?, 
+          cerrado = ?
+        WHERE id = ?`,
+        [dto.fecha, dto.motivoConsulta, dto.peso, dto.temperatura, dto.diagnostico, dto.tratamiento, dto.medicamentos, dto.observaciones, dto.notasPrivadas, dto.veterinarioId, dto.mascotaId, dto.cerrado ? 1 : 0, dto.id],
         function (err) {
           if (err) return reject(createError(500, 'Error actualizando historial'));
           if (this.changes === 0) return reject(createError(404, 'Registro no encontrado'));
-          resolve(new HistorialDTO(dto.id, dto.mascotaId, dto.descripcion, dto.fecha, dto.notas));
+          resolve(new HistorialDTO(
+            dto.id, 
+            dto.mascotaId, 
+            dto.fecha, 
+            dto.motivoConsulta, 
+            dto.peso, 
+            dto.temperatura, 
+            dto.diagnostico, 
+            dto.tratamiento, 
+            dto.medicamentos, 
+            dto.observaciones, 
+            dto.notasPrivadas, 
+            dto.veterinarioId,
+            dto.cerrado
+          ));
         }
       );
     });

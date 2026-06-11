@@ -40,11 +40,41 @@ export const historialController = {
 
   create: async (req, res, next) => {
     try {
-      const { descripcion, fecha, notas, mascotaId } = req.body;
-      if (!descripcion || !fecha || !mascotaId) {
-        return res.status(400).json({ error: 'Descripción, fecha y mascotaId son requeridos' });
+      const {
+        fecha,
+        motivoConsulta,
+        peso,
+        temperatura,
+        diagnostico,
+        tratamiento,
+        medicamentos,
+        observaciones,
+        notasPrivadas,
+        veterinarioId,
+        mascotaId,
+        cerrado
+      } = req.body;
+
+      if (!fecha || !motivoConsulta || !diagnostico || !mascotaId || !veterinarioId) {
+        return res.status(400).json({ error: 'Fecha, motivoConsulta, diagnostico, mascotaId y veterinarioId son requeridos' });
       }
-      const dto = new HistorialDTO(null, mascotaId, descripcion, fecha, notas);
+
+      const dto = new HistorialDTO(
+        null,
+        mascotaId,
+        fecha,
+        motivoConsulta,
+        peso,
+        temperatura,
+        diagnostico,
+        tratamiento,
+        medicamentos,
+        observaciones,
+        notasPrivadas,
+        veterinarioId,
+        cerrado
+      );
+
       const record = await historialService.create(dto);
       res.status(201).json(record);
     } catch (err) {
@@ -54,8 +84,37 @@ export const historialController = {
 
   update: async (req, res, next) => {
     try {
-      const { descripcion, fecha, notas, mascotaId } = req.body;
-      const dto = new HistorialDTO(req.params.id, mascotaId, descripcion, fecha, notas);
+      const {
+        fecha,
+        motivoConsulta,
+        peso,
+        temperatura,
+        diagnostico,
+        tratamiento,
+        medicamentos,
+        observaciones,
+        notasPrivadas,
+        veterinarioId,
+        mascotaId,
+        cerrado
+      } = req.body;
+
+      const dto = new HistorialDTO(
+        req.params.id,
+        mascotaId,
+        fecha,
+        motivoConsulta,
+        peso,
+        temperatura,
+        diagnostico,
+        tratamiento,
+        medicamentos,
+        observaciones,
+        notasPrivadas,
+        veterinarioId,
+        cerrado
+      );
+
       const record = await historialService.update(dto);
       res.json(record);
     } catch (err) {

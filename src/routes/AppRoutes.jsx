@@ -20,6 +20,8 @@ import PagosTrash from "../pages/Pagos/PagosTrash";
 
 // Importar nuevas páginas de Veterinario
 import VeterinarioDashboard from "../pages/Veterinario/VeterinarioDashboard";
+import VeterinarioCitas from "../pages/Veterinario/VeterinarioCitas";
+import VeterinarioHistorial from "../pages/Veterinario/VeterinarioHistorial";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -52,9 +54,9 @@ function AppRoutes() {
 
           {/* Rutas Veterinario */}
           <Route path="/veterinario/dashboard" element={<VeterinarioDashboard />} />
-          <Route path="/veterinario/citas" element={<Citas />} />
+          <Route path="/veterinario/citas" element={<VeterinarioCitas />} />
           <Route path="/veterinario/mascotas" element={<Mascotas />} />
-          <Route path="/veterinario/historial" element={<Historial />} />
+          <Route path="/veterinario/historial" element={<VeterinarioHistorial />} />
           <Route path="/veterinario/vacunas" element={<VeterinarioDashboard />} />
         </Route>
       </Route>
