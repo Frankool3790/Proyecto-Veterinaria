@@ -18,6 +18,9 @@ import NuevoPago from "../pages/Client/NuevoPago";
 import PagosAdmin from "../pages/Pagos/PagosAdmin";
 import PagosTrash from "../pages/Pagos/PagosTrash";
 
+// Importar nuevas páginas de Veterinario
+import VeterinarioDashboard from "../pages/Veterinario/VeterinarioDashboard";
+
 import ProtectedRoute from "./ProtectedRoute";
 
 function AppRoutes() {
@@ -46,6 +49,13 @@ function AppRoutes() {
           <Route path="/nuevo-pago" element={<NuevoPago />} />
           <Route path="/mis-turnos" element={<ClientCitas />} />
           <Route path="/mi-historial" element={<ClientHistorial />} />
+
+          {/* Rutas Veterinario */}
+          <Route path="/veterinario/dashboard" element={<VeterinarioDashboard />} />
+          <Route path="/veterinario/citas" element={<Citas />} />
+          <Route path="/veterinario/mascotas" element={<Mascotas />} />
+          <Route path="/veterinario/historial" element={<Historial />} />
+          <Route path="/veterinario/vacunas" element={<VeterinarioDashboard />} />
         </Route>
       </Route>
       

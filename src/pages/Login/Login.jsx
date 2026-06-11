@@ -5,7 +5,7 @@ import Button from "../../components/Button/Button";
 import "./Login.css";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const result = await login(username.trim(), password);
+      const result = await login(email.trim(), password);
       if (result.success) {
         navigate(redirectTo, { replace: true });
       } else {
@@ -45,12 +45,12 @@ export default function Login() {
             {error && <div className="error-message-new">{error}</div>}
             
             <div className="form-group-new">
-              <label>Usuario / Email</label>
+              <label>Email</label>
               <input 
-                type="text" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
-                placeholder="admin@gmail.com"
+                type="email" 
+                value={email} 
+                onChange={(e) => setEmail(e.target.value)} 
+                placeholder="admin@veterinaria.com"
                 required
               />
             </div>

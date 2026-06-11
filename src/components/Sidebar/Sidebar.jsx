@@ -8,28 +8,44 @@ import {
   Stethoscope, 
   History, 
   CreditCard,
-  X
+  X,
+  Syringe,
+  FileText
 } from "lucide-react";
 import "./Sidebar.css";
 
 export default function Sidebar({ isOpen, onClose }) {
-  const { isAdmin, isClient } = useAuth();
+  const { isAdmin, isClient, isVeterinario } = useAuth();
 
-  const links = isAdmin ? [
-    { to: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
-    { to: "/clientes", label: "Dueños", icon: <Users size={20} /> },
-    { to: "/mascotas", label: "Mascotas", icon: <Dog size={20} /> },
-    { to: "/turnos", label: "Turnos", icon: <Calendar size={20} /> },
-    { to: "/veterinarios", label: "Veterinarios", icon: <Stethoscope size={20} /> },
-    { to: "/historial", label: "Historial", icon: <History size={20} /> },
-    { to: "/pagos", label: "Pagos", icon: <CreditCard size={20} /> },
-  ] : [
-    { to: "/dashboard", label: "Mi Panel", icon: <LayoutDashboard size={20} /> },
-    { to: "/mis-mascotas", label: "Mis Mascotas", icon: <Dog size={20} /> },
-    { to: "/nuevo-pago", label: "Nuevo Pago", icon: <CreditCard size={20} /> },
-    { to: "/mis-turnos", label: "Mis Turnos", icon: <Calendar size={20} /> },
-    { to: "/mi-historial", label: "Mi Historial", icon: <History size={20} /> },
-  ];
+  let links = [];
+
+  if (isAdmin) {
+    links = [
+      { to: "/dashboard", label: "Dashboard", icon: <LayoutDashboard size={20} /> },
+      { to: "/clientes", label: "Dueños", icon: <Users size={20} /> },
+      { to: "/mascotas", label: "Mascotas", icon: <Dog size={20} /> },
+      { to: "/turnos", label: "Turnos", icon: <Calendar size={20} /> },
+      { to: "/veterinarios", label: "Veterinarios", icon: <Stethoscope size={20} /> },
+      { to: "/historial", label: "Historial", icon: <History size={20} /> },
+      { to: "/pagos", label: "Pagos", icon: <CreditCard size={20} /> },
+    ];
+  } else if (isVeterinario) {
+    links = [
+      { to: "/veterinario/dashboard", label: "Panel Veterinario", icon: <LayoutDashboard size={20} /> },
+      { to: "/veterinario/citas", label: "Mis Citas", icon: <Calendar size={20} /> },
+      { to: "/veterinario/mascotas", label: "Mascotas", icon: <Dog size={20} /> },
+      { to: "/veterinario/historial", label: "Historial Clínico", icon: <FileText size={20} /> },
+      { to: "/veterinario/vacunas", label: "Control de Vacunas", icon: <Syringe size={20} /> },
+    ];
+  } else {
+    links = [
+      { to: "/dashboard", label: "Mi Panel", icon: <LayoutDashboard size={20} /> },
+      { to: "/mis-mascotas", label: "Mis Mascotas", icon: <Dog size={20} /> },
+      { to: "/nuevo-pago", label: "Nuevo Pago", icon: <CreditCard size={20} /> },
+      { to: "/mis-turnos", label: "Mis Turnos", icon: <Calendar size={20} /> },
+      { to: "/mi-historial", label: "Mi Historial", icon: <History size={20} /> },
+    ];
+  }
 
   return (
     <>

@@ -19,27 +19,29 @@ export const AuthProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
     const cliente_id = localStorage.getItem("cliente_id");
+    const veterinario_id = localStorage.getItem("veterinario_id");
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
 
     if (token) {
-      setUser({ ...userData, token, role, cliente_id });
+      setUser({ ...userData, token, role, cliente_id, veterinario_id });
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
     setLoading(false);
   }, []);
 
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     try {
-      const response = await api.post("/auth/login", { username, password });
-      const { token, role, cliente_id, ...userData } = response.data;
+      const response = await api.post("/auth/login", { email, password });
+      const { token, role, cliente_id, veterinario_id, ...userData } = response.data;
       
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       if (cliente_id) localStorage.setItem("cliente_id", cliente_id);
+      if (veterinario_id) localStorage.setItem("veterinario_id", veterinario_id);
       localStorage.setItem("userData", JSON.stringify(userData));
 
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      setUser({ ...userData, token, role, cliente_id });
+      setUser({ ...userData, token, role, cliente_id, veterinario_id });
       return { success: true };
     } catch (error) {
       console.error("Error en login:", error);
@@ -67,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("cliente_id");
+    localStorage.removeItem("veterinario_id");
     localStorage.removeItem("userData");
     delete api.defaults.headers.common["Authorization"];
     setUser(null);
@@ -79,9 +82,11 @@ export const AuthProvider = ({ children }) => {
       register, 
       logout, 
       isAuthenticated: !!user, 
-      isAdmin: user?.role === 'ROLE_ADMIN',
-      isClient: user?.role === 'ROLE_USER',
+      isAdmin: user?.role === 'ADMIN',
+      isVeterinario: user?.role === 'VETERINARIO',
+      isClient: user?.role === 'CLIENTE',
       clienteId: user?.cliente_id,
+      veterinarioId: user?.veterinario_id,
       loading 
     }}>
       {!loading && children}
