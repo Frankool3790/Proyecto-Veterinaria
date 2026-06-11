@@ -20,13 +20,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+              "raw": "{\n  \"email\": \"admin@veterinaria.com\",\n  \"password\": \"admin123\"\n}"
             },
             "url": {
               "raw": "http://localhost:3002/api/auth/login",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "auth", "login"]
             }
           }
@@ -45,7 +45,7 @@
               "raw": "http://localhost:3002/api/clientes",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "clientes"]
             }
           }
@@ -59,7 +59,7 @@
               "raw": "http://localhost:3002/api/clientes/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "clientes", "1"]
             }
           }
@@ -82,7 +82,7 @@
               "raw": "http://localhost:3002/api/clientes",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "clientes"]
             }
           }
@@ -105,7 +105,7 @@
               "raw": "http://localhost:3002/api/clientes/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "clientes", "1"]
             }
           }
@@ -119,7 +119,7 @@
               "raw": "http://localhost:3002/api/clientes/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "clientes", "1"]
             }
           }
@@ -138,7 +138,7 @@
               "raw": "http://localhost:3002/api/mascotas",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "mascotas"]
             }
           }
@@ -152,7 +152,7 @@
               "raw": "http://localhost:3002/api/mascotas/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "mascotas", "1"]
             }
           }
@@ -163,11 +163,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3002/api/mascotas/filter/cliente/1",
+              "raw": "http://localhost:3002/api/mascotas/cliente/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
-              "path": ["api", "mascotas", "filter", "cliente", "1"]
+              "port": "3002",
+              "path": ["api", "mascotas", "cliente", "1"]
             }
           }
         },
@@ -189,7 +189,7 @@
               "raw": "http://localhost:3002/api/mascotas",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "mascotas"]
             }
           }
@@ -212,7 +212,7 @@
               "raw": "http://localhost:3002/api/mascotas/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "mascotas", "1"]
             }
           }
@@ -226,7 +226,7 @@
               "raw": "http://localhost:3002/api/mascotas/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "mascotas", "1"]
             }
           }
@@ -245,7 +245,7 @@
               "raw": "http://localhost:3002/api/veterinarios",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "veterinarios"]
             }
           }
@@ -259,7 +259,7 @@
               "raw": "http://localhost:3002/api/veterinarios/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "veterinarios", "1"]
             }
           }
@@ -282,7 +282,7 @@
               "raw": "http://localhost:3002/api/veterinarios",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "veterinarios"]
             }
           }
@@ -305,7 +305,7 @@
               "raw": "http://localhost:3002/api/veterinarios/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "veterinarios", "1"]
             }
           }
@@ -319,7 +319,7 @@
               "raw": "http://localhost:3002/api/veterinarios/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "veterinarios", "1"]
             }
           }
@@ -338,7 +338,7 @@
               "raw": "http://localhost:3002/api/citas",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "citas"]
             }
           }
@@ -352,7 +352,7 @@
               "raw": "http://localhost:3002/api/citas/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "citas", "1"]
             }
           }
@@ -363,11 +363,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3002/api/citas/filter/mascota/1",
+              "raw": "http://localhost:3002/api/citas/mascota/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
-              "path": ["api", "citas", "filter", "mascota", "1"]
+              "port": "3002",
+              "path": ["api", "citas", "mascota", "1"]
             }
           }
         },
@@ -377,11 +377,25 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3002/api/citas/filter/veterinario/1",
+              "raw": "http://localhost:3002/api/citas/veterinario/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
-              "path": ["api", "citas", "filter", "veterinario", "1"]
+              "port": "3002",
+              "path": ["api", "citas", "veterinario", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener citas por cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/citas/cliente/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "citas", "cliente", "1"]
             }
           }
         },
@@ -397,13 +411,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fecha\": \"2024-12-25\",\n  \"hora\": \"10:30\",\n  \"mascotaId\": 1,\n  \"veterinarioId\": 1,\n  \"motivo\": \"Chequeo de rutina\",\n  \"estado\": \"PENDIENTE\"\n}"
+              "raw": "{\n  \"fecha\": \"2024-12-25\",\n  \"hora\": \"10:30\",\n  \"mascotaId\": 1,\n  \"veterinarioId\": 1,\n  \"motivo\": \"Chequeo de rutina\",\n  \"estado\": \"Pendiente\"\n}"
             },
             "url": {
               "raw": "http://localhost:3002/api/citas",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "citas"]
             }
           }
@@ -420,13 +434,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": 1,\n  \"fecha\": \"2024-12-26\",\n  \"hora\": \"14:00\",\n  \"mascotaId\": 1,\n  \"veterinarioId\": 2,\n  \"motivo\": \"Vacunación anual actualizada\",\n  \"estado\": \"CONFIRMADA\"\n}"
+              "raw": "{\n  \"id\": 1,\n  \"fecha\": \"2024-12-26\",\n  \"hora\": \"14:00\",\n  \"mascotaId\": 1,\n  \"veterinarioId\": 2,\n  \"motivo\": \"Vacunación anual actualizada\",\n  \"estado\": \"Confirmado\"\n}"
             },
             "url": {
               "raw": "http://localhost:3002/api/citas/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "citas", "1"]
             }
           }
@@ -440,7 +454,7 @@
               "raw": "http://localhost:3002/api/citas/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "citas", "1"]
             }
           }
@@ -459,7 +473,7 @@
               "raw": "http://localhost:3002/api/historial",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "historial"]
             }
           }
@@ -473,7 +487,7 @@
               "raw": "http://localhost:3002/api/historial/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "historial", "1"]
             }
           }
@@ -484,11 +498,25 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3002/api/historial/filter/mascota/1",
+              "raw": "http://localhost:3002/api/historial/mascota/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
-              "path": ["api", "historial", "filter", "mascota", "1"]
+              "port": "3002",
+              "path": ["api", "historial", "mascota", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener historial por cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/historial/cliente/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "historial", "cliente", "1"]
             }
           }
         },
@@ -504,13 +532,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"mascotaId\": 1,\n  \"descripcion\": \"Consulta por dolor abdominal\",\n  \"fecha\": \"2024-06-08\",\n  \"notas\": \"Se realizó examen físico y ultrasonido. Se prescribió medicamento.\"\n}"
+              "raw": "{\n  \"mascotaId\": 1,\n  \"fecha\": \"2024-06-08\",\n  \"motivoConsulta\": \"Dolor abdominal\",\n  \"peso\": 4.5,\n  \"temperatura\": 38.5,\n  \"diagnostico\": \"Gastritis leve\",\n  \"tratamiento\": \"Dieta blanda y medicamento\",\n  \"medicamentos\": \"Omeprazol 10mg\",\n  \"notasPrivadas\": \"Mascota ansiosa\",\n  \"veterinarioId\": 1\n}"
             },
             "url": {
               "raw": "http://localhost:3002/api/historial",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "historial"]
             }
           }
@@ -527,13 +555,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id\": 1,\n  \"mascotaId\": 1,\n  \"descripcion\": \"Vacunación anual actualizada\",\n  \"fecha\": \"2024-06-08\",\n  \"notas\": \"Se aplicó vacuna triple felina. Mascota en buen estado de salud.\"\n}"
+              "raw": "{\n  \"id\": 1,\n  \"mascotaId\": 1,\n  \"fecha\": \"2024-06-08\",\n  \"motivoConsulta\": \"Chequeo anual\",\n  \"peso\": 4.6,\n  \"temperatura\": 38.3,\n  \"diagnostico\": \"Buena salud\",\n  \"tratamiento\": \"Ninguno\",\n  \"veterinarioId\": 1\n}"
             },
             "url": {
               "raw": "http://localhost:3002/api/historial/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "historial", "1"]
             }
           }
@@ -547,8 +575,171 @@
               "raw": "http://localhost:3002/api/historial/1",
               "protocol": "http",
               "host": ["localhost"],
-              "port": "3307",
+              "port": "3002",
               "path": ["api", "historial", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💉 Vacunas",
+      "item": [
+        {
+          "name": "Obtener todas las vacunas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/vacunas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "vacunas"]
+            }
+          }
+        },
+        {
+          "name": "Obtener vacuna por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/vacunas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "vacunas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener vacunas por mascota",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/vacunas/mascota/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "vacunas", "mascota", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear vacuna",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombreVacuna\": \"Rabia\",\n  \"fechaAplicacion\": \"2024-06-08\",\n  \"fechaProximaDosis\": \"2025-06-08\",\n  \"veterinarioId\": 1,\n  \"mascotaId\": 1,\n  \"notas\": \"Primera dosis\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/vacunas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "vacunas"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar vacuna",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"nombreVacuna\": \"Rabia\",\n  \"fechaAplicacion\": \"2024-06-08\",\n  \"fechaProximaDosis\": \"2025-06-08\",\n  \"veterinarioId\": 1,\n  \"mascotaId\": 1,\n  \"notas\": \"Dosis actualizada\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/vacunas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "vacunas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar vacuna",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/vacunas/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "vacunas", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "💰 Pagos",
+      "item": [
+        {
+          "name": "Obtener todos los pagos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/pagos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "pagos"]
+            }
+          }
+        },
+        {
+          "name": "Obtener pagos por mascota",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3002/api/pagos/mascota/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "pagos", "mascota", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear pago",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mascotaId\": 1,\n  \"monto\": 150,\n  \"metodoPago\": \"Tarjeta\",\n  \"descripcion\": \"Consulta general\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3002/api/pagos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3002",
+              "path": ["api", "pagos"]
             }
           }
         }

@@ -22,6 +22,7 @@ import PagosTrash from "../pages/Pagos/PagosTrash";
 import VeterinarioDashboard from "../pages/Veterinario/VeterinarioDashboard";
 import VeterinarioCitas from "../pages/Veterinario/VeterinarioCitas";
 import VeterinarioHistorial from "../pages/Veterinario/VeterinarioHistorial";
+import VeterinarioVacunas from "../pages/Veterinario/VeterinarioVacunas";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -57,7 +58,7 @@ function AppRoutes() {
           <Route path="/veterinario/citas" element={<VeterinarioCitas />} />
           <Route path="/veterinario/mascotas" element={<Mascotas />} />
           <Route path="/veterinario/historial" element={<VeterinarioHistorial />} />
-          <Route path="/veterinario/vacunas" element={<VeterinarioDashboard />} />
+          <Route path="/veterinario/vacunas" element={<VeterinarioVacunas />} />
         </Route>
       </Route>
       

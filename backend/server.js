@@ -12,6 +12,7 @@ import citaRoutes from './src/routes/citaRoutes.js';
 import historialRoutes from './src/routes/historialRoutes.js';
 import pagoRoutes from './src/routes/pagoRoutes.js';
 import uploadRoutes from './src/routes/uploadRoutes.js';
+import vacunaRoutes from './src/routes/vacunaRoutes.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 
 dotenv.config();
@@ -39,6 +40,7 @@ app.use('/api/citas', citaRoutes);
 app.use('/api/historial', historialRoutes);
 app.use('/api/pagos', pagoRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/vacunas', vacunaRoutes);
 
 app.use(errorHandler);
 
