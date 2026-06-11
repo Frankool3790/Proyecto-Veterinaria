@@ -1,0 +1,123 @@
+[
+  {
+    "line": 3,
+    "elements": [
+      {
+        "before": [
+          {
+            "result": {
+              "duration": 104490200,
+              "status": "passed"
+            },
+            "match": {
+              "location": "PreparacionEscenario.configurarEscenario()"
+            }
+          }
+        ],
+        "line": 5,
+        "name": "Registrar nuevo usuario exitoso",
+        "description": "",
+        "id": "registrar-usuario;registrar-nuevo-usuario-exitoso",
+        "after": [
+          {
+            "result": {
+              "duration": 118200,
+              "status": "passed"
+            },
+            "match": {
+              "location": "PreparacionEscenario.limpiarEscenario()"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Escenario",
+        "steps": [
+          {
+            "result": {
+              "duration": 4839337100,
+              "status": "passed"
+            },
+            "line": 7,
+            "name": "que el usuario está en la página de inicio",
+            "match": {
+              "location": "RegistrarStepDefinitions.abrirPaginaInicio()"
+            },
+            "keyword": "Dado "
+          },
+          {
+            "result": {
+              "duration": 6061100,
+              "status": "passed"
+            },
+            "line": 8,
+            "name": "el usuario abre el formulario de registro",
+            "match": {
+              "location": "RegistrarStepDefinitions.abrirFormularioRegistro()"
+            },
+            "keyword": "Cuando "
+          },
+          {
+            "result": {
+              "duration": 2824083200,
+              "status": "passed"
+            },
+            "line": 9,
+            "name": "el usuario completa el formulario con los datos:",
+            "match": {
+              "location": "RegistrarStepDefinitions.completarFormularioRegistro(DataTable)"
+            },
+            "rows": [
+              {
+                "cells": [
+                  "nombre",
+                  "apellido",
+                  "email",
+                  "password"
+                ]
+              },
+              {
+                "cells": [
+                  "Carlos",
+                  "Lopez",
+                  "carlos@example.com",
+                  "123456"
+                ]
+              }
+            ],
+            "keyword": "Y "
+          },
+          {
+            "result": {
+              "duration": 3180600,
+              "status": "passed"
+            },
+            "line": 12,
+            "name": "el usuario envía el formulario de registro",
+            "match": {
+              "location": "RegistrarStepDefinitions.enviarFormularioRegistro()"
+            },
+            "keyword": "Y "
+          },
+          {
+            "result": {
+              "duration": 4798800,
+              "status": "passed"
+            },
+            "line": 13,
+            "name": "el usuario es redirigido a la página de inicio de sesión",
+            "match": {
+              "location": "RegistrarStepDefinitions.validarRedireccionLogin()"
+            },
+            "keyword": "Entonces "
+          }
+        ]
+      }
+    ],
+    "name": "Registrar Usuario",
+    "description": "",
+    "id": "registrar-usuario",
+    "keyword": "Característica",
+    "uri": "src/test/resources/features/09_Registrar/01_RegistrarUsuario.feature",
+    "tags": []
+  }
+]
