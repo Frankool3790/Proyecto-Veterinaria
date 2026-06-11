@@ -5,7 +5,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { motion } from "framer-motion";
 
 export default function Table({ columns, data, actions = [], loading = false }) {
-  const hasActions = Array.isArray(actions) && actions.length > 0;
+  const hasActions = typeof actions === "function" || (Array.isArray(actions) && actions.length > 0);
 
   return (
     <motion.div 
@@ -61,15 +61,18 @@ export default function Table({ columns, data, actions = [], loading = false }) 
                 })}
                 {hasActions && (
                   <td className="table-actions">
-                    {actions.map((action, actionIndex) => (
-                      <Button
-                        key={actionIndex}
-                        variant={action.variant || "secondary"}
-                        onClick={() => action.onClick(row)}
-                      >
-                        {action.label}
-                      </Button>
-                    ))}
+                    {(() => {
+                      const rowActions = typeof actions === "function" ? actions(row) : actions;
+                      return (Array.isArray(rowActions) ? rowActions : []).map((action, actionIndex) => (
+                        <Button
+                          key={actionIndex}
+                          variant={action.variant || "secondary"}
+                          onClick={() => action.onClick(row)}
+                        >
+                          {action.label}
+                        </Button>
+                      ));
+                    })()}
                   </td>
                 )}
               </tr>

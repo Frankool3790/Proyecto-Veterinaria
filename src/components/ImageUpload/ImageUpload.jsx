@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
+import { getAssetUrl } from '../../utils/apiConfig';
 import './ImageUpload.css';
 
 export default function ImageUpload({ onUploadSuccess, currentImage, label = "Imagen" }) {
@@ -41,7 +42,7 @@ export default function ImageUpload({ onUploadSuccess, currentImage, label = "Im
     onUploadSuccess(null);
   };
 
-  const displayImage = preview || (currentImage ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3002'}${currentImage}` : null);
+  const displayImage = preview || (currentImage ? getAssetUrl(currentImage) : null);
 
   return (
     <div className="image-upload-container">

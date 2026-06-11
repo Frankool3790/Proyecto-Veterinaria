@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import Button from "../../components/Button/Button";
 import "./Login.css";
@@ -8,17 +8,26 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectTo = location.state?.from?.pathname || "/dashboard";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    const result = await login(username, password);
-    if (result.success) {
-      navigate("/dashboard");
-    } else {
-      setError(result.message);
+    setLoading(true);
+
+    try {
+      const result = await login(username.trim(), password);
+      if (result.success) {
+        navigate(redirectTo, { replace: true });
+      } else {
+        setError(result.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,10 +66,12 @@ export default function Login() {
               />
             </div>
 
-            <Button type="submit" variant="primary">Iniciar Sesión</Button>
+            <Button type="submit" variant="primary" disabled={loading}>
+              {loading ? "Ingresando..." : "Iniciar Sesión"}
+            </Button>
             
             <div className="login-footer-links">
-              <a href="/">Volver al inicio</a>
+              <Link to="/">Volver al inicio</Link>
             </div>
           </form>
         </div>

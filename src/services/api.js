@@ -1,9 +1,8 @@
 import axios from "axios";
-
-const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3002/api";
+import { getApiBaseUrl } from "../utils/apiConfig";
 
 export default axios.create({
-  baseURL,
+  baseURL: getApiBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },

@@ -3,6 +3,8 @@ import Table from "../../components/Table/Table";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import api from "../../services/api";
+import toast from "react-hot-toast";
+import { confirmDelete } from "../../utils/swalHelper";
 import { useSearch } from "../../context/SearchContext";
 
 const columns = [
@@ -24,6 +26,7 @@ export default function Veterinarios() {
   const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadVeterinarios();
@@ -31,11 +34,14 @@ export default function Veterinarios() {
 
   const loadVeterinarios = async () => {
     try {
+      setLoading(true);
       const response = await api.get("/veterinarios");
       setVeterinarios(response.data || []);
     } catch (err) {
       console.error(err);
       setError("No se pudieron cargar los veterinarios.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,29 +85,44 @@ export default function Veterinarios() {
     }
 
     try {
+      setLoading(true);
       if (editingId) {
         await api.put(`/veterinarios/${editingId}`, form);
+        toast.success("Veterinario actualizado");
       } else {
         await api.post("/veterinarios", form);
+        toast.success("Veterinario registrado");
       }
       await loadVeterinarios();
       closeModal();
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Error guardando el veterinario.");
+      const errorMsg = err.response?.data?.error || "Error guardando el veterinario.";
+      toast.error(errorMsg);
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (vet) => {
-    const confirmed = window.confirm(`Eliminar al veterinario ${vet.nombre}?`);
-    if (!confirmed) return;
+    const result = await confirmDelete(
+      "¿Eliminar veterinario?",
+      `Se eliminará a ${vet.nombre} permanentemente.`
+    );
+    if (!result.isConfirmed) return;
 
     try {
+      setLoading(true);
       await api.delete(`/veterinarios/${vet.id}`);
       await loadVeterinarios();
+      toast.success("Veterinario eliminado");
     } catch (err) {
       console.error(err);
+      toast.error("No se pudo eliminar el veterinario.");
       setError("No se pudo eliminar el veterinario.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -128,6 +149,7 @@ export default function Veterinarios() {
       <Table
         columns={columns}
         data={filteredVeterinarios}
+        loading={loading}
         actions={[
           { label: "Editar", variant: "secondary", onClick: openEditModal },
           { label: "Eliminar", variant: "danger", onClick: handleDelete },
@@ -149,7 +171,9 @@ export default function Veterinarios() {
             <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="veterinario@mail.com" />
           </div>
           {error && <p className="form-error">{error}</p>}
-          <Button type="submit" variant="primary">{editingId ? "Actualizar veterinario" : "Guardar veterinario"}</Button>
+          <Button type="submit" variant="primary" disabled={loading}>
+            {editingId ? "Actualizar veterinario" : "Guardar veterinario"}
+          </Button>
         </form>
       </Modal>
     </div>

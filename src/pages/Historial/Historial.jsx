@@ -28,6 +28,7 @@ export default function Historial() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(initialForm);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadHistorial();
@@ -36,11 +37,14 @@ export default function Historial() {
 
   const loadHistorial = async () => {
     try {
+      setLoading(true);
       const response = await api.get("/historial");
       setHistorial(response.data || []);
     } catch (err) {
       console.error(err);
       setError("No se pudo cargar el historial.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +85,7 @@ export default function Historial() {
     }
 
     try {
+      setLoading(true);
       await api.post("/historial", {
         descripcion: form.descripcion,
         fecha: form.fecha,
@@ -95,6 +100,8 @@ export default function Historial() {
       const errorMsg = err.response?.data?.error || "Error guardando el registro de historial.";
       toast.error(errorMsg);
       setError(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,12 +113,15 @@ export default function Historial() {
     
     if (result.isConfirmed) {
       try {
+        setLoading(true);
         await api.delete(`/historial/${record.id}`);
         await loadHistorial();
         toast.success("Registro eliminado");
       } catch (err) {
         console.error(err);
         toast.error("No se pudo eliminar el registro");
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -146,6 +156,7 @@ export default function Historial() {
       <Table
         columns={columns}
         data={displayHistorial}
+        loading={loading}
         actions={[
           { label: "Eliminar", variant: "danger", onClick: handleDelete },
         ]}
@@ -175,7 +186,7 @@ export default function Historial() {
             <textarea name="notas" value={form.notas} onChange={handleChange} placeholder="Notas adicionales" />
           </div>
           {error && <p className="form-error">{error}</p>}
-          <Button type="submit" variant="primary">Guardar historial</Button>
+          <Button type="submit" variant="primary" disabled={loading}>Guardar historial</Button>
         </form>
       </Modal>
     </div>

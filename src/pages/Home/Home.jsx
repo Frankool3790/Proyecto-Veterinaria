@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import LandingNavbar from "../../components/LandingNavbar/LandingNavbar";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
 import Footer from "../../components/Footer/Footer";
-import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import "./Home.css";
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
           onClose={() => setShowRegister(false)} 
           onSuccess={() => {
             setShowRegister(false);
-            alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
+            toast.success("Registro exitoso. Ahora puedes iniciar sesión.");
             navigate("/login");
           }}
         />

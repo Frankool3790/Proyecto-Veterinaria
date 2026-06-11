@@ -7,6 +7,7 @@ import api from "../../services/api";
 import toast from "react-hot-toast";
 import { confirmDelete } from "../../utils/swalHelper";
 import { useSearch } from "../../context/SearchContext";
+import { getAssetUrl } from "../../utils/apiConfig";
 
 const columns = [
   { 
@@ -14,7 +15,7 @@ const columns = [
     field: "avatar_url", 
     render: (val) => (
       <img 
-        src={val ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:3002'}${val}` : '/favicon.svg'} 
+        src={getAssetUrl(val)} 
         alt="Avatar" 
         style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} 
       />
@@ -166,6 +167,7 @@ export default function Clientes() {
       <Table
         columns={columns}
         data={filteredClientes}
+        loading={loading}
         actions={[
           { label: "Editar", variant: "secondary", onClick: openEditModal },
           { label: "Eliminar", variant: "danger", onClick: handleDelete },
