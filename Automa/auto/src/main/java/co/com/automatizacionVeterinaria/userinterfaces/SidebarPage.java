@@ -9,10 +9,6 @@ public class SidebarPage {
             Target.the("link dashboard en sidebar")
                     .located(By.xpath("//nav//span[text()='Dashboard']"));
 
-    public static final Target LINK_CLIENTES =
-            Target.the("link dueños en sidebar")
-                    .located(By.xpath("//nav//span[text()='Dueños']"));
-
     public static final Target LINK_MASCOTAS =
             Target.the("link mascotas en sidebar")
                     .located(By.xpath("//nav//span[text()='Mascotas']"));

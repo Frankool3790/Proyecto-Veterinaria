@@ -4,26 +4,25 @@ import co.com.automatizacionVeterinaria.questions.LoginVisible;
 import co.com.automatizacionVeterinaria.tasks.CerrarSesion;
 import cucumber.api.java.es.Cuando;
 import cucumber.api.java.es.Entonces;
-import net.serenitybdd.screenplay.actors.OnStage;
-import org.junit.Assert;
+
+import static net.serenitybdd.screenplay.GivenWhenThen.seeThat;
+import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
+import static org.hamcrest.CoreMatchers.is;
 
 public class CerrarSesionStepDefinitions {
 
-    @Cuando("cierra la sesión")
+    @Cuando("^cierra la sesión$")
     public void cerrarSesion() {
 
-        OnStage.theActorInTheSpotlight()
+        theActorInTheSpotlight()
                 .attemptsTo(
                         CerrarSesion.correctamente()
                 );
     }
 
-    @Entonces("se visualiza nuevamente el login")
+    @Entonces("^se visualiza nuevamente el login$")
     public void validarLogout() {
 
-        Assert.assertTrue(
-                LoginVisible.nuevamente()
-                        .answeredBy(OnStage.theActorInTheSpotlight())
-        );
+        seeThat(LoginVisible.nuevamente(), is(true));
     }
 }

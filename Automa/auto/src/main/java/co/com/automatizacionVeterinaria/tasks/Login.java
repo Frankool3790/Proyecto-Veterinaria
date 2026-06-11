@@ -9,7 +9,6 @@ import net.serenitybdd.screenplay.actions.Enter;
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
 public class Login implements Task {
-
     private final String usuario;
     private final String contrasena;
 

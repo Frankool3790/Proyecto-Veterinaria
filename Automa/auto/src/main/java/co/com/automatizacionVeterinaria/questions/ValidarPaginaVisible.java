@@ -21,10 +21,6 @@ public class ValidarPaginaVisible implements Question<Boolean> {
     public Boolean answeredBy(Actor actor) {
         Target titulo;
         switch (pagina.toLowerCase()) {
-            case "clientes":
-            case "dueños":
-                titulo = ClientesPage.TITULO;
-                break;
             case "mascotas":
                 titulo = MascotasPage.TITULO;
                 break;

@@ -22,10 +22,6 @@ public class NavegarA implements Task {
     @Override
     public <T extends Actor> void performAs(T actor) {
         switch (pagina.toLowerCase()) {
-            case "clientes":
-            case "dueños":
-                actor.attemptsTo(Click.on(SidebarPage.LINK_CLIENTES));
-                break;
             case "mascotas":
                 actor.attemptsTo(Click.on(SidebarPage.LINK_MASCOTAS));
                 break;

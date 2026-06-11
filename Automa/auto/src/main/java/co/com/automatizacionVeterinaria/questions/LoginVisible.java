@@ -5,13 +5,12 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Question;
 
 public class LoginVisible implements Question<Boolean> {
+    public static LoginVisible nuevamente() {
+        return new LoginVisible();
+    }
 
     @Override
     public Boolean answeredBy(Actor actor) {
         return LoginPage.INPUT_USUARIO.resolveFor(actor).isVisible();
-    }
-
-    public static LoginVisible nuevamente(){
-        return new LoginVisible();
     }
 }

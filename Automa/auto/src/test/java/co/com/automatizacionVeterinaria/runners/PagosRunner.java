@@ -9,8 +9,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "src/test/resources/features/08_Pagos/01_VerPagos.feature",
         glue = {
-                "co.com.automatizacionVeterinaria.stepsdefinitions",
-                "co.com.automatizacionVeterinaria.utils.hooks"
+                "co.com.automatizacionVeterinaria.stepsdefinitions"
         },
         plugin = {
                 "pretty",
