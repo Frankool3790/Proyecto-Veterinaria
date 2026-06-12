@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
-import Button from "../../components/Button";
+import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import { Syringe, Plus, Edit, Trash2 } from "lucide-react";
 
