@@ -8,8 +8,15 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = {
-                "co.com.automatizacionAlmasoft.stepsdefinitions"
-        }
+                "co.com.automatizacionAlmasoft.stepsdefinitions",
+                "co.com.automatizacionAlmasoft.utils.hooks"
+        },
+        plugin = {
+                "pretty",
+                "html:target/cucumber-reports",
+                "json:target/cucumber.json"
+        },
+        monochrome = true
 )
 public class RegressionRunner {
 }
