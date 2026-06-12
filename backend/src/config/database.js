@@ -253,6 +253,10 @@ export const initializeDatabase = async () => {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
+    try {
+      await connection.query("ALTER TABLE veterinarios ADD COLUMN telefono VARCHAR(50)");
+    } catch (e) {}
+
     await connection.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
         id INT AUTO_INCREMENT PRIMARY KEY,
