@@ -3,11 +3,11 @@ import { comparePassword, hashPassword, createError } from '../utils/helpers.js'
 import { LoginResponse } from '../models/AuthDTO.js';
 
 export const authService = {
-  authenticate: (username, password) => {
+  authenticate: (email, password) => {
     return new Promise((resolve, reject) => {
       db.get(
         'SELECT * FROM usuarios WHERE username = ? OR email = ?',
-        [username, username],
+        [email, email],
         async (err, user) => {
           if (err) return reject(createError(500, 'Error en BD'));
           if (!user) return reject(createError(401, 'Usuario no encontrado'));
@@ -16,12 +16,13 @@ export const authService = {
           if (!isValid) return reject(createError(401, 'Contraseña inválida'));
 
           resolve({
-            username: user.username,
             token: 'fake-jwt-token',
             role: user.roles,
             cliente_id: user.cliente_id,
+            veterinario_id: user.veterinario_id,
             nombre: user.nombre,
-            apellido: user.apellido
+            apellido: user.apellido,
+            email: user.email
           });
         }
       );
@@ -34,14 +35,12 @@ export const authService = {
     const username = email;
 
     return new Promise((resolve, reject) => {
-      // 1. Verificar si el usuario ya existe para dar un mensaje claro
       db.get('SELECT id FROM usuarios WHERE email = ? OR username = ?', [email, username], (err, existingUser) => {
         if (err) return reject(createError(500, 'Error al verificar usuario'));
         if (existingUser) {
           return reject(createError(400, 'El correo electrónico ya está en uso'));
         }
 
-        // 2. Crear el cliente primero
         db.run(
           'INSERT INTO clientes (nombre, email) VALUES (?, ?)',
           [`${nombre} ${apellido}`, email],
@@ -55,10 +54,9 @@ export const authService = {
 
             const clienteId = this.lastID;
 
-            // 3. Crear el usuario vinculado al cliente
             db.run(
               'INSERT INTO usuarios (username, password, nombre, apellido, email, roles, cliente_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-              [username, hashedPassword, nombre, apellido, email, 'ROLE_USER', clienteId],
+              [username, hashedPassword, nombre, apellido, email, 'CLIENTE', clienteId],
               function (errUser) {
                 if (errUser) {
                   return reject(createError(500, 'Error al registrar usuario'));

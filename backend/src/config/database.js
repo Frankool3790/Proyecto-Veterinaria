@@ -27,7 +27,9 @@ const createSQLiteDatabase = () => {
         email TEXT UNIQUE,
         roles TEXT DEFAULT 'ROLE_USER',
         cliente_id INTEGER,
-        FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+        veterinario_id INTEGER,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+        FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id)
       )
     `);
 
@@ -55,16 +57,13 @@ const createSQLiteDatabase = () => {
       )
     `);
 
-    // Intentar agregar columnas si ya existen las tablas
-    sqliteDb.run("ALTER TABLE clientes ADD COLUMN avatar_url TEXT", (err) => {});
-    sqliteDb.run("ALTER TABLE mascotas ADD COLUMN foto_url TEXT", (err) => {});
-
     sqliteDb.run(`
       CREATE TABLE IF NOT EXISTS veterinarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL,
         especialidad TEXT,
-        email TEXT
+        email TEXT,
+        telefono TEXT
       )
     `);
 
@@ -85,10 +84,33 @@ const createSQLiteDatabase = () => {
     sqliteDb.run(`
       CREATE TABLE IF NOT EXISTS historial_clinico (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        descripcion TEXT,
-        fecha TEXT,
-        notas TEXT,
         mascota_id INTEGER,
+        fecha TEXT,
+        motivo_consulta TEXT,
+        peso REAL,
+        temperatura REAL,
+        diagnostico TEXT,
+        tratamiento TEXT,
+        medicamentos TEXT,
+        observaciones TEXT,
+        notas_privadas TEXT,
+        veterinario_id INTEGER,
+        cerrado INTEGER DEFAULT 0,
+        FOREIGN KEY (mascota_id) REFERENCES mascotas(id),
+        FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id)
+      )
+    `);
+
+    sqliteDb.run(`
+      CREATE TABLE IF NOT EXISTS vacunas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nombre_vacuna TEXT NOT NULL,
+        fecha_aplicacion TEXT,
+        fecha_proxima_dosis TEXT,
+        veterinario_id INTEGER,
+        mascota_id INTEGER,
+        notas TEXT,
+        FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id),
         FOREIGN KEY (mascota_id) REFERENCES mascotas(id)
       )
     `);
@@ -107,12 +129,41 @@ const createSQLiteDatabase = () => {
       )
     `);
 
-    // Intentar agregar columna is_deleted si ya existe la tabla pagos
-    sqliteDb.run("ALTER TABLE pagos ADD COLUMN is_deleted INTEGER DEFAULT 0", (err) => {});
+    // Intentar agregar columnas si ya existen las tablas
+    sqliteDb.run("ALTER TABLE clientes ADD COLUMN avatar_url TEXT", (err) => {});
+    sqliteDb.run("ALTER TABLE mascotas ADD COLUMN foto_url TEXT", (err) => {});
+    sqliteDb.run("ALTER TABLE usuarios ADD COLUMN veterinario_id INTEGER", (err) => {});
+
+    // Insert test data
+    sqliteDb.run(`
+      INSERT OR IGNORE INTO veterinarios (id, nombre, especialidad, email, telefono)
+      VALUES 
+        (1, 'Dr. Carlos López', 'Cirugía', 'carlos@veterinaria.com', '555-1234'),
+        (2, 'Dra. María González', 'Medicina General', 'maria@veterinaria.com', '555-5678')
+    `);
 
     sqliteDb.run(`
-      INSERT OR IGNORE INTO usuarios (username, password, roles)
-      VALUES ('admin', '$2a$10$Dow1tQn9B1uJ7OYImuXzIu8QFOByXz2Z8fE62/0fQnkh0G9TE3g8a', 'ROLE_ADMIN')
+      INSERT OR IGNORE INTO clientes (id, nombre, telefono, email, direccion)
+      VALUES 
+        (1, 'Juan Pérez', '555-9876', 'juan.perez@email.com', 'Calle Principal 123'),
+        (2, 'María García', '555-4321', 'maria.garcia@email.com', 'Calle Secundaria 456')
+    `);
+
+    sqliteDb.run(`
+      INSERT OR IGNORE INTO mascotas (id, nombre, especie, raza, edad, cliente_id)
+      VALUES 
+        (1, 'Fido', 'Perro', 'Labrador', 3, 1),
+        (2, 'Michi', 'Gato', 'Persa', 2, 2)
+    `);
+
+    sqliteDb.run(`
+      INSERT OR IGNORE INTO usuarios (id, username, password, nombre, apellido, email, roles, cliente_id, veterinario_id)
+      VALUES 
+        (1, 'admin@veterinaria.com', '$2a$10$kalJSOHg.cSCPZpA6zv1W.lY3hNuhC0RXZMw6wo7NkN/Qeb9jLZBy', 'Administrador', '', 'admin@veterinaria.com', 'ADMIN', NULL, NULL),
+        (2, 'carlos@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'Carlos', 'López', 'carlos@veterinaria.com', 'VETERINARIO', NULL, 1),
+        (3, 'maria@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'María', 'González', 'maria@veterinaria.com', 'VETERINARIO', NULL, 2),
+        (4, 'juan.perez@email.com', '$2a$10$qVYuUH34WQv7qRE8tMc9LeQaxoOQeIZz8/d5nrgl7yg6w993bXKKq', 'Juan', 'Pérez', 'juan.perez@email.com', 'CLIENTE', 1, NULL),
+        (5, 'maria.garcia@email.com', '$2a$10$qVYuUH34WQv7qRE8tMc9LeQaxoOQeIZz8/d5nrgl7yg6w993bXKKq', 'María', 'García', 'maria.garcia@email.com', 'CLIENTE', 2, NULL)
     `);
   });
 
@@ -188,10 +239,19 @@ export const initializeDatabase = async () => {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
-    // Intentar agregar columna avatar_url si ya existe la tabla clientes en MySQL
     try {
       await connection.query("ALTER TABLE clientes ADD COLUMN avatar_url TEXT");
     } catch (e) {}
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS veterinarios (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(255) NOT NULL,
+        especialidad VARCHAR(255),
+        email VARCHAR(255),
+        telefono VARCHAR(50)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
 
     await connection.query(`
       CREATE TABLE IF NOT EXISTS usuarios (
@@ -203,9 +263,15 @@ export const initializeDatabase = async () => {
         email VARCHAR(255) UNIQUE,
         roles VARCHAR(255) DEFAULT 'ROLE_USER',
         cliente_id INT,
-        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
+        veterinario_id INT,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL,
+        FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+
+    try {
+      await connection.query("ALTER TABLE usuarios ADD COLUMN veterinario_id INT");
+    } catch (e) {}
 
     await connection.query(`
       CREATE TABLE IF NOT EXISTS mascotas (
@@ -220,37 +286,8 @@ export const initializeDatabase = async () => {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
-    // Intentar agregar columna foto_url si ya existe la tabla mascotas en MySQL
     try {
       await connection.query("ALTER TABLE mascotas ADD COLUMN foto_url TEXT");
-    } catch (e) {}
-
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS veterinarios (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        nombre VARCHAR(255) NOT NULL,
-        especialidad VARCHAR(255),
-        telefono VARCHAR(50)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-    `);
-
-    await connection.query(`
-      CREATE TABLE IF NOT EXISTS pagos (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        cliente_id INT,
-        monto DECIMAL(10, 2) NOT NULL,
-        metodo_pago VARCHAR(50),
-        estado VARCHAR(50) DEFAULT 'Completado',
-        fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
-        descripcion TEXT,
-        is_deleted TINYINT(1) DEFAULT 0,
-        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-    `);
-
-    // Intentar agregar columna is_deleted si ya existe la tabla pagos en MySQL
-    try {
-      await connection.query("ALTER TABLE pagos ADD COLUMN is_deleted TINYINT(1) DEFAULT 0");
     } catch (e) {}
 
     await connection.query(`
@@ -270,17 +307,85 @@ export const initializeDatabase = async () => {
     await connection.query(`
       CREATE TABLE IF NOT EXISTS historial_clinico (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        descripcion TEXT,
-        fecha DATE,
-        notas TEXT,
         mascota_id INT,
+        fecha DATE,
+        motivo_consulta TEXT,
+        peso DECIMAL(10,2),
+        temperatura DECIMAL(5,2),
+        diagnostico TEXT,
+        tratamiento TEXT,
+        medicamentos TEXT,
+        observaciones TEXT,
+        notas_privadas TEXT,
+        veterinario_id INT,
+        cerrado TINYINT(1) DEFAULT 0,
+        FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE SET NULL,
+        FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS vacunas (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre_vacuna VARCHAR(255) NOT NULL,
+        fecha_aplicacion DATE,
+        fecha_proxima_dosis DATE,
+        veterinario_id INT,
+        mascota_id INT,
+        notas TEXT,
+        FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL,
         FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE SET NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
     await connection.query(`
-      REPLACE INTO usuarios (id, username, password, nombre, roles, email)
-      VALUES (1, 'admin@gmail.com', '$2a$10$A0NAmaDqpNHF7kdvZeEb0e9SwjFbSKlZxibTWP8tQ/3gsQEiStB7K', 'Administrador', 'ROLE_ADMIN', 'admin@gmail.com');
+      CREATE TABLE IF NOT EXISTS pagos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cliente_id INT,
+        monto DECIMAL(10, 2) NOT NULL,
+        metodo_pago VARCHAR(50),
+        estado VARCHAR(50) DEFAULT 'Completado',
+        fecha DATETIME DEFAULT CURRENT_TIMESTAMP,
+        descripcion TEXT,
+        is_deleted TINYINT(1) DEFAULT 0,
+        FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    try {
+      await connection.query("ALTER TABLE pagos ADD COLUMN is_deleted TINYINT(1) DEFAULT 0");
+    } catch (e) {}
+
+    // Insert test data
+    await connection.query(`
+      INSERT IGNORE INTO veterinarios (id, nombre, especialidad, email, telefono)
+      VALUES 
+        (1, 'Dr. Carlos López', 'Cirugía', 'carlos@veterinaria.com', '555-1234'),
+        (2, 'Dra. María González', 'Medicina General', 'maria@veterinaria.com', '555-5678')
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO clientes (id, nombre, telefono, email, direccion)
+      VALUES 
+        (1, 'Juan Pérez', '555-9876', 'juan.perez@email.com', 'Calle Principal 123'),
+        (2, 'María García', '555-4321', 'maria.garcia@email.com', 'Calle Secundaria 456')
+    `);
+
+    await connection.query(`
+      INSERT IGNORE INTO mascotas (id, nombre, especie, raza, edad, cliente_id)
+      VALUES 
+        (1, 'Fido', 'Perro', 'Labrador', 3, 1),
+        (2, 'Michi', 'Gato', 'Persa', 2, 2)
+    `);
+
+    await connection.query(`
+      REPLACE INTO usuarios (id, username, password, nombre, apellido, email, roles, cliente_id, veterinario_id)
+      VALUES 
+        (1, 'admin@veterinaria.com', '$2a$10$kalJSOHg.cSCPZpA6zv1W.lY3hNuhC0RXZMw6wo7NkN/Qeb9jLZBy', 'Administrador', '', 'admin@veterinaria.com', 'ADMIN', NULL, NULL),
+        (2, 'carlos@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'Carlos', 'López', 'carlos@veterinaria.com', 'VETERINARIO', NULL, 1),
+        (3, 'maria@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'María', 'González', 'maria@veterinaria.com', 'VETERINARIO', NULL, 2),
+        (4, 'juan.perez@email.com', '$2a$10$qVYuUH34WQv7qRE8tMc9LeQaxoOQeIZz8/d5nrgl7yg6w993bXKKq', 'Juan', 'Pérez', 'juan.perez@email.com', 'CLIENTE', 1, NULL),
+        (5, 'maria.garcia@email.com', '$2a$10$qVYuUH34WQv7qRE8tMc9LeQaxoOQeIZz8/d5nrgl7yg6w993bXKKq', 'María', 'García', 'maria.garcia@email.com', 'CLIENTE', 2, NULL)
     `);
 
     console.log('Conectado a MySQL y tablas inicializadas');
