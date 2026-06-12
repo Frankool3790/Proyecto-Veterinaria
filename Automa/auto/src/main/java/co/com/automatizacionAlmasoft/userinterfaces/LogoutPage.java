@@ -7,6 +7,6 @@ public class LogoutPage {
 
     public static final Target BTN_CERRAR_SESION =
             Target.the("Botón cerrar sesión")
-                    .located(By.xpath("//button[contains(text(), 'Cerrar Sesión')]"));
+                    .located(By.xpath("//button[contains(normalize-space(.), 'Cerrar') or contains(normalize-space(.), 'Logout')]"));
 
 }

@@ -1,7 +1,6 @@
 package co.com.automatizacionAlmasoft.runners;
 
-import io.cucumber.junit.CucumberOptions;
-import io.cucumber.junit.CucumberOptions.SnippetType;
+import cucumber.api.CucumberOptions;
 import net.serenitybdd.cucumber.CucumberWithSerenity;
 import org.junit.runner.RunWith;
 
@@ -17,7 +16,6 @@ import org.junit.runner.RunWith;
                 "html:target/cucumber-reports",
                 "json:target/cucumber.json"
         },
-        snippets = SnippetType.CAMELCASE,
         monochrome = true
 )
 public class ClientesRunner {
