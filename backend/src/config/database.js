@@ -159,7 +159,7 @@ const createSQLiteDatabase = () => {
     sqliteDb.run(`
       INSERT OR IGNORE INTO usuarios (id, username, password, nombre, apellido, email, roles, cliente_id, veterinario_id)
       VALUES 
-        (1, 'admin@veterinaria.com', '$2a$10$kalJSOHg.cSCPZpA6zv1W.lY3hNuhC0RXZMw6wo7NkN/Qeb9jLZBy', 'Administrador', '', 'admin@veterinaria.com', 'ADMIN', NULL, NULL),
+        (1, 'admin@gmail.com', '$2a$10$lARiSctduskEk3QAzwPZb.TWGHuPoij5PvLV8Ts2NQzi75wJOHrHm', 'Administrador', '', 'admin@gmail.com', 'ADMIN', NULL, NULL),
         (2, 'carlos@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'Carlos', 'López', 'carlos@veterinaria.com', 'VETERINARIO', NULL, 1),
         (3, 'maria@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'María', 'González', 'maria@veterinaria.com', 'VETERINARIO', NULL, 2),
         (4, 'juan.perez@email.com', '$2a$10$qVYuUH34WQv7qRE8tMc9LeQaxoOQeIZz8/d5nrgl7yg6w993bXKKq', 'Juan', 'Pérez', 'juan.perez@email.com', 'CLIENTE', 1, NULL),
@@ -385,7 +385,7 @@ export const initializeDatabase = async () => {
     await connection.query(`
       REPLACE INTO usuarios (id, username, password, nombre, apellido, email, roles, cliente_id, veterinario_id)
       VALUES 
-        (1, 'admin@veterinaria.com', '$2a$10$kalJSOHg.cSCPZpA6zv1W.lY3hNuhC0RXZMw6wo7NkN/Qeb9jLZBy', 'Administrador', '', 'admin@veterinaria.com', 'ADMIN', NULL, NULL),
+        (1, 'admin@gmail.com', '$2a$10$lARiSctduskEk3QAzwPZb.TWGHuPoij5PvLV8Ts2NQzi75wJOHrHm', 'Administrador', '', 'admin@gmail.com', 'ADMIN', NULL, NULL),
         (2, 'carlos@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'Carlos', 'López', 'carlos@veterinaria.com', 'VETERINARIO', NULL, 1),
         (3, 'maria@veterinaria.com', '$2a$10$4cgAdkwF/r/5E1bEtg5lhu79R7pc9SpNnKpdQgkNJFkc5FL1oeKcy', 'María', 'González', 'maria@veterinaria.com', 'VETERINARIO', NULL, 2),
         (4, 'juan.perez@email.com', '$2a$10$qVYuUH34WQv7qRE8tMc9LeQaxoOQeIZz8/d5nrgl7yg6w993bXKKq', 'Juan', 'Pérez', 'juan.perez@email.com', 'CLIENTE', 1, NULL),

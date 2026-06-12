@@ -4,7 +4,7 @@
 -- Incluye: roles completos, historia clínica detallada,
 -- tratamientos, vacunas, archivos, notas privadas y auditoría
 -- ============================================================
-
+DROP DATABASE IF EXISTS veterinaria;
 CREATE DATABASE IF NOT EXISTS veterinaria;
 USE veterinaria;
 
@@ -158,8 +158,8 @@ INSERT IGNORE INTO mascotas (id, nombre, especie, raza, edad, cliente_id) VALUES
 
 -- Insertar USUARIOS con credenciales por defecto
 INSERT IGNORE INTO usuarios (id, username, password, nombre, apellido, email, roles, cliente_id, veterinario_id) VALUES
--- Admin: admin@veterinaria.com / admin123
-(1, 'admin@veterinaria.com', '$2a$10$JMwWJFJKqUgbFdsoiNJoVuDWRphGKuo.UYgaMC9hG03m2PTC32WV6', 'Administrador', '', 'admin@veterinaria.com', 'ADMIN', NULL, NULL),
+-- Admin: admin@gmail.com / 123456
+(1, 'admin@gmail.com', '$2a$10$lARiSctduskEk3QAzwPZb.TWGHuPoij5PvLV8Ts2NQzi75wJOHrHm', 'Administrador', '', 'admin@gmail.com', 'ADMIN', NULL, NULL),
 -- Veterinario: carlos@veterinaria.com / vet123
 (2, 'carlos@veterinaria.com', '$2a$10$qBKP/J1k5B9XoNCSvnIxO.dcb9pRF89mvPn/L3LLK9rL7cFkW8Gn2', 'Carlos', 'López', 'carlos@veterinaria.com', 'VETERINARIO', NULL, 1),
 -- Veterinario 2: maria@veterinaria.com / vet123
@@ -174,6 +174,6 @@ INSERT IGNORE INTO usuarios (id, username, password, nombre, apellido, email, ro
 -- ============================================================
 SELECT '✅ Base de datos veterinaria actualizada exitosamente' AS estado;
 SELECT 'Credenciales por defecto:' AS info;
-SELECT 'Admin: admin@veterinaria.com / admin123' AS admin;
+SELECT 'Admin: admin@gmail.com / 123456' AS admin;
 SELECT 'Veterinario: carlos@veterinaria.com / vet123' AS veterinario;
 SELECT 'Cliente: juan.perez@email.com / cliente123' AS cliente;

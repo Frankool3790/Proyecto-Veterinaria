@@ -1,12 +1,12 @@
 # Credenciales de Acceso
 
-## Veterinaria San Hyugo
+## Veterinaria San Hyuga
 
 ---
 
 ### Admin
-- **Correo: admin@veterinaria.com
-- **Contraseña**: admin123
+- **Correo: admin@gmail.com
+- **Contraseña**: 123456
 
 ### Veterinario 1
 - **Correo**: carlos@veterinaria.com
