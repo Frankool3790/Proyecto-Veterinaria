@@ -28,6 +28,17 @@ public class LoginStepDefinitions {
                 );
     }
 
+    @Dado("^que el usuario está logueado en el panel principal$")
+    public void usuarioLogueadoEnDashboard() {
+        OnStage.setTheStage(new OnlineCast());
+        OnStage.theActorCalled("Usuario")
+                .wasAbleTo(
+                        Open.url("http://localhost:3000/login"),
+                        Login.conCredenciales("admin@gmail.com", "123456")
+                );
+        seeThat(ValidarDashboard.estaVisible(), is(true));
+    }
+
     @Cuando("^el usuario ingresa sus credenciales válidas$")
     public void ingresarCredenciales(DataTable dataTable) {
         List<Map<String, String>> credenciales = dataTable.asMaps(String.class, String.class);
