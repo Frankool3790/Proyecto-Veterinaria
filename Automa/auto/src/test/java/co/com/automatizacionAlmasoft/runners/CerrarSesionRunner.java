@@ -8,8 +8,15 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = "src/test/resources/features/01_Usuarios/06_CerrarSesion.feature",
         glue = {
-                "co.com.automatizacionAlmasoft.stepsdefinitions"
-        }
+                "co.com.automatizacionAlmasoft.stepsdefinitions",
+                "co.com.automatizacionAlmasoft.utils.hooks"
+        },
+        plugin = {
+                "pretty",
+                "html:target/cucumber-reports",
+                "json:target/cucumber.json"
+        },
+        monochrome = true
 )
 public class CerrarSesionRunner {
 }

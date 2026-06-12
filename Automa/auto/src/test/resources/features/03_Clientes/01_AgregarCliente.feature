@@ -14,7 +14,7 @@ Característica: Agregar y Gestionar Clientes
       | María González  | 555-1234       | maria@example.com   | Calle 123       |
     Entonces se valida que el cliente fue creado correctamente
 
-  Escenario Outline: Agregar múltiples clientes con diferentes datos
+  Esquema del escenario: Agregar múltiples clientes con diferentes datos
 
     Dado que el usuario está logueado en el panel principal
     Cuando se navega a la página de clientes
@@ -23,7 +23,7 @@ Característica: Agregar y Gestionar Clientes
       | <nombre>        | <telefono>     | <email>             | <direccion>     |
     Entonces se valida que el cliente fue creado correctamente
 
-    Examples:
+    Ejemplos:
       | nombre          | telefono       | email               | direccion       |
       | Carlos López    | 555-5678       | carlos@example.com  | Av. Principal   |
       | Ana Ruiz        | 555-9012       | ana@example.com     | Calle 45        |

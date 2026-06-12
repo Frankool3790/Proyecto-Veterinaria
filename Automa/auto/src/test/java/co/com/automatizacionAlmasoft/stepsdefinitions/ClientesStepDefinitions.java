@@ -2,7 +2,6 @@ package co.com.automatizacionAlmasoft.stepsdefinitions;
 
 import co.com.automatizacionAlmasoft.questions.ValidarClienteCreado;
 import co.com.automatizacionAlmasoft.tasks.AgregarCliente;
-import co.com.automatizacionAlmasoft.tasks.NavegarA;
 import cucumber.api.DataTable;
 import cucumber.api.java.es.Y;
 import cucumber.api.java.es.Entonces;
@@ -15,11 +14,7 @@ import static net.serenitybdd.screenplay.actors.OnStage.theActorInTheSpotlight;
 import static org.hamcrest.CoreMatchers.is;
 
 public class ClientesStepDefinitions {
-
-    @Y("^se navega a la página de clientes$")
-    public void navegarAPaginaClientes() {
-        theActorInTheSpotlight().attemptsTo(NavegarA.laPagina("clientes"));
-    }
+    private String ultimoNombreCliente;
 
     @Y("^se agrega un nuevo cliente con los datos$")
     public void agregarNuevoCliente(DataTable dataTable) {
@@ -29,13 +24,12 @@ public class ClientesStepDefinitions {
         String email = datos.get(0).get("email");
         String direccion = datos.get(0).get("direccion");
 
+        ultimoNombreCliente = nombre;
         theActorInTheSpotlight().attemptsTo(AgregarCliente.conDatos(nombre, telefono, email, direccion));
     }
 
     @Entonces("^se valida que el cliente fue creado correctamente$")
     public void validarClienteCreado() {
-        // For simplicity, we'll just check that the clientes page is visible
-        // You could pass the last added client name here
-        seeThat(ValidarClienteCreado.conNombre("María González"), is(true));
+        seeThat(ValidarClienteCreado.conNombre(ultimoNombreCliente), is(true));
     }
 }
