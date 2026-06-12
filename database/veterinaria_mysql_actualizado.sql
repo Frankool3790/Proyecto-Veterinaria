@@ -9,63 +9,17 @@ CREATE DATABASE IF NOT EXISTS veterinaria;
 USE veterinaria;
 
 -- ============================================================
--- TABLA: usuarios
--- Usuarios del sistema con roles y relación a entidades
--- ============================================================
-CREATE TABLE IF NOT EXISTS usuarios (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(150) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  rol ENUM('ADMIN', 'VETERINARIO', 'CLIENTE') NOT NULL DEFAULT 'CLIENTE',
-  cliente_id INT NULL,
-  veterinario_id INT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_usuario_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL,
-  CONSTRAINT fk_usuario_veterinario FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL,
-  INDEX idx_usuarios_email (email),
-  INDEX idx_usuarios_rol (rol)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
 -- TABLA: clientes
 -- Propietarios de mascotas
 -- ============================================================
 CREATE TABLE IF NOT EXISTS clientes (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(150) NOT NULL,
-  telefono VARCHAR(20),
-  email VARCHAR(150) UNIQUE,
+  nombre VARCHAR(255) NOT NULL,
+  telefono VARCHAR(50),
+  email VARCHAR(255) UNIQUE,
   direccion VARCHAR(255),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_clientes_email (email),
-  INDEX idx_clientes_nombre (nombre)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- TABLA: mascotas
--- Animales registrados con campos médicos
--- ============================================================
-CREATE TABLE IF NOT EXISTS mascotas (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(150) NOT NULL,
-  especie VARCHAR(50) NOT NULL,
-  raza VARCHAR(100),
-  edad INT,
-  peso DECIMAL(5,2),
-  color VARCHAR(50),
-  sexo ENUM('Macho', 'Hembra', 'Desconocido') DEFAULT 'Desconocido',
-  cliente_id INT NOT NULL,
-  foto_url VARCHAR(255),
-  observaciones TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_mascotas_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
-  INDEX idx_mascotas_cliente_id (cliente_id),
-  INDEX idx_mascotas_nombre (nombre),
-  INDEX idx_mascotas_especie (especie)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  avatar_url TEXT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- TABLA: veterinarios
@@ -73,17 +27,44 @@ CREATE TABLE IF NOT EXISTS mascotas (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS veterinarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(150) NOT NULL,
-  especialidad VARCHAR(100),
-  email VARCHAR(150) UNIQUE,
-  telefono VARCHAR(20),
-  licencia VARCHAR(100),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  INDEX idx_veterinarios_email (email),
-  INDEX idx_veterinarios_nombre (nombre),
-  INDEX idx_veterinarios_especialidad (especialidad)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  nombre VARCHAR(255) NOT NULL,
+  especialidad VARCHAR(255),
+  email VARCHAR(255),
+  telefono VARCHAR(50)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- TABLA: usuarios
+-- Usuarios del sistema con roles y relación a entidades
+-- ============================================================
+CREATE TABLE IF NOT EXISTS usuarios (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  nombre VARCHAR(255),
+  apellido VARCHAR(255),
+  email VARCHAR(255) UNIQUE,
+  roles VARCHAR(255) DEFAULT 'ROLE_USER',
+  cliente_id INT,
+  veterinario_id INT,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL,
+  FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- TABLA: mascotas
+-- Animales registrados con campos médicos
+-- ============================================================
+CREATE TABLE IF NOT EXISTS mascotas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(255) NOT NULL,
+  especie VARCHAR(255) NOT NULL,
+  raza VARCHAR(255),
+  edad INT,
+  cliente_id INT,
+  foto_url TEXT,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- TABLA: citas
@@ -94,19 +75,13 @@ CREATE TABLE IF NOT EXISTS citas (
   fecha DATE NOT NULL,
   hora TIME NOT NULL,
   motivo VARCHAR(255),
-  estado ENUM('Pendiente', 'Solicitado', 'Confirmado', 'Completado', 'Cancelado', 'Reprogramado') DEFAULT 'Pendiente',
+  estado VARCHAR(50) DEFAULT 'Pendiente',
   motivo_cancelacion TEXT,
-  mascota_id INT NOT NULL,
-  veterinario_id INT NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_citas_mascota FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE CASCADE,
-  CONSTRAINT fk_citas_veterinario FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE CASCADE,
-  INDEX idx_citas_mascota_id (mascota_id),
-  INDEX idx_citas_veterinario_id (veterinario_id),
-  INDEX idx_citas_fecha (fecha),
-  INDEX idx_citas_estado (estado)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  mascota_id INT,
+  veterinario_id INT,
+  FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE SET NULL,
+  FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- TABLA: historial_clinico
@@ -114,45 +89,21 @@ CREATE TABLE IF NOT EXISTS citas (
 -- ============================================================
 CREATE TABLE IF NOT EXISTS historial_clinico (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  fecha DATE NOT NULL,
-  motivo_consulta VARCHAR(255) NOT NULL,
-  peso DECIMAL(5,2),
-  temperatura DECIMAL(4,1),
-  diagnostico TEXT NOT NULL,
+  mascota_id INT,
+  fecha DATE,
+  motivo_consulta TEXT,
+  peso DECIMAL(10,2),
+  temperatura DECIMAL(5,2),
+  diagnostico TEXT,
   tratamiento TEXT,
   medicamentos TEXT,
   observaciones TEXT,
   notas_privadas TEXT,
-  veterinario_id INT NOT NULL,
-  mascota_id INT NOT NULL,
-  cerrado BOOLEAN DEFAULT FALSE,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_historial_mascota FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE CASCADE,
-  CONSTRAINT fk_historial_veterinario FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE CASCADE,
-  INDEX idx_historial_mascota_id (mascota_id),
-  INDEX idx_historial_veterinario_id (veterinario_id),
-  INDEX idx_historial_fecha (fecha)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- TABLA: tratamientos
--- Tratamientos prescritos
--- ============================================================
-CREATE TABLE IF NOT EXISTS tratamientos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre_medicamento VARCHAR(255) NOT NULL,
-  dosis VARCHAR(100) NOT NULL,
-  frecuencia VARCHAR(100) NOT NULL,
-  duracion VARCHAR(100),
-  recomendaciones TEXT,
-  historial_id INT NOT NULL,
-  mascota_id INT NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_tratamientos_historial FOREIGN KEY (historial_id) REFERENCES historial_clinico(id) ON DELETE CASCADE,
-  CONSTRAINT fk_tratamientos_mascota FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  veterinario_id INT,
+  cerrado TINYINT(1) DEFAULT 0,
+  FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE SET NULL,
+  FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- TABLA: vacunas
@@ -161,85 +112,62 @@ CREATE TABLE IF NOT EXISTS tratamientos (
 CREATE TABLE IF NOT EXISTS vacunas (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre_vacuna VARCHAR(255) NOT NULL,
-  fecha_aplicacion DATE NOT NULL,
+  fecha_aplicacion DATE,
   fecha_proxima_dosis DATE,
-  veterinario_id INT NOT NULL,
-  mascota_id INT NOT NULL,
+  veterinario_id INT,
+  mascota_id INT,
   notas TEXT,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_vacunas_mascota FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE CASCADE,
-  CONSTRAINT fk_vacunas_veterinario FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE CASCADE,
-  INDEX idx_vacunas_mascota_id (mascota_id),
-  INDEX idx_vacunas_fecha_proxima (fecha_proxima_dosis)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  FOREIGN KEY (veterinario_id) REFERENCES veterinarios(id) ON DELETE SET NULL,
+  FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
--- TABLA: archivos_adjuntos
--- Archivos subidos (fotos, radiografías, etc.)
+-- TABLA: pagos
+-- Control de pagos
 -- ============================================================
-CREATE TABLE IF NOT EXISTS archivos_adjuntos (
+CREATE TABLE IF NOT EXISTS pagos (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre_archivo VARCHAR(255) NOT NULL,
-  tipo_archivo VARCHAR(100),
-  ruta_archivo VARCHAR(255) NOT NULL,
-  tamanio INT,
+  cliente_id INT,
+  monto DECIMAL(10,2) NOT NULL,
+  metodo_pago VARCHAR(50),
+  estado VARCHAR(50) DEFAULT 'Completado',
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   descripcion TEXT,
-  historial_id INT,
-  mascota_id INT NOT NULL,
-  uploaded_by INT NOT NULL,
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_archivos_historial FOREIGN KEY (historial_id) REFERENCES historial_clinico(id) ON DELETE SET NULL,
-  CONSTRAINT fk_archivos_mascota FOREIGN KEY (mascota_id) REFERENCES mascotas(id) ON DELETE CASCADE,
-  CONSTRAINT fk_archivos_usuario FOREIGN KEY (uploaded_by) REFERENCES usuarios(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- TABLA: auditoria_logs
--- Logs de auditoría de acciones
--- ============================================================
-CREATE TABLE IF NOT EXISTS auditoria_logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  accion VARCHAR(100) NOT NULL,
-  entidad VARCHAR(50) NOT NULL,
-  entidad_id INT NOT NULL,
-  detalles TEXT,
-  usuario_id INT NOT NULL,
-  rol_usuario VARCHAR(50),
-  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_auditoria_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
-  INDEX idx_auditoria_fecha (createdAt),
-  INDEX idx_auditoria_usuario (usuario_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  is_deleted TINYINT(1) DEFAULT 0,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- DATOS INICIALES
 -- ============================================================
 
 -- Insertar veterinarios primero para vincular usuarios
-INSERT IGNORE INTO veterinarios (nombre, especialidad, email, telefono, licencia) VALUES
-('Dr. Carlos López', 'Cirugía General', 'carlos@veterinaria.com', '555-0101', 'LIC-VET-001'),
-('Dra. María González', 'Oftalmología', 'maria@veterinaria.com', '555-0102', 'LIC-VET-002'),
-('Dr. Juan Rodríguez', 'Cardiología', 'juan@veterinaria.com', '555-0103', 'LIC-VET-003');
+INSERT IGNORE INTO veterinarios (id, nombre, especialidad, email, telefono) VALUES
+(1, 'Dr. Carlos López', 'Cirugía', 'carlos@veterinaria.com', '555-0101'),
+(2, 'Dra. María González', 'Medicina General', 'maria@veterinaria.com', '555-0102');
 
 -- Insertar clientes primero para vincular usuarios
-INSERT IGNORE INTO clientes (nombre, telefono, email, direccion) VALUES
-('Juan Pérez', '555-1001', 'juan.perez@email.com', 'Calle Principal 123'),
-('María García', '555-1002', 'maria.garcia@email.com', 'Av. Secundaria 456');
+INSERT IGNORE INTO clientes (id, nombre, telefono, email, direccion) VALUES
+(1, 'Juan Pérez', '555-1001', 'juan.perez@email.com', 'Calle Principal 123'),
+(2, 'María García', '555-1002', 'maria.garcia@email.com', 'Av. Secundaria 456');
+
+-- Insertar mascotas
+INSERT IGNORE INTO mascotas (id, nombre, especie, raza, edad, cliente_id) VALUES
+(1, 'Fido', 'Perro', 'Labrador', 3, 1),
+(2, 'Michi', 'Gato', 'Persa', 2, 2);
 
 -- Insertar USUARIOS con credenciales por defecto
--- Contraseñas: "password123" hasheadas con bcrypt (rondas 10)
-INSERT IGNORE INTO usuarios (email, password, rol, cliente_id, veterinario_id) VALUES
+INSERT IGNORE INTO usuarios (id, username, password, nombre, apellido, email, roles, cliente_id, veterinario_id) VALUES
 -- Admin: admin@veterinaria.com / admin123
-('admin@veterinaria.com', '$2a$10$Dow1tQn9B1uJ7OYImuXzIu8QFOByXz2Z8fE62/0fQnkh0G9TE3g8a', 'ADMIN', NULL, NULL),
+(1, 'admin@veterinaria.com', '$2a$10$JMwWJFJKqUgbFdsoiNJoVuDWRphGKuo.UYgaMC9hG03m2PTC32WV6', 'Administrador', '', 'admin@veterinaria.com', 'ADMIN', NULL, NULL),
 -- Veterinario: carlos@veterinaria.com / vet123
-('carlos@veterinaria.com', '$2a$10$8r2i0J3k6L4m7N5oP8qR9sT0uV1wX2yZ3a4b5C6d7E8f9G0h1', 'VETERINARIO', NULL, 1),
+(2, 'carlos@veterinaria.com', '$2a$10$qBKP/J1k5B9XoNCSvnIxO.dcb9pRF89mvPn/L3LLK9rL7cFkW8Gn2', 'Carlos', 'López', 'carlos@veterinaria.com', 'VETERINARIO', NULL, 1),
 -- Veterinario 2: maria@veterinaria.com / vet123
-('maria@veterinaria.com', '$2a$10$8r2i0J3k6L4m7N5oP8qR9sT0uV1wX2yZ3a4b5C6d7E8f9G0h1', 'VETERINARIO', NULL, 2),
+(3, 'maria@veterinaria.com', '$2a$10$qBKP/J1k5B9XoNCSvnIxO.dcb9pRF89mvPn/L3LLK9rL7cFkW8Gn2', 'María', 'González', 'maria@veterinaria.com', 'VETERINARIO', NULL, 2),
 -- Cliente: juan.perez@email.com / cliente123
-('juan.perez@email.com', '$2a$10$Z0aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0uV1wX2yZ3a4b5C6d7E8f9G0', 'CLIENTE', 1, NULL),
+(4, 'juan.perez@email.com', '$2a$10$2xFVmkyqwHeUu65k0WlmVuqWvTgzYig.tAmkebQPVgIxSnlNXnaEy', 'Juan', 'Pérez', 'juan.perez@email.com', 'CLIENTE', 1, NULL),
 -- Cliente 2: maria.garcia@email.com / cliente123
-('maria.garcia@email.com', '$2a$10$Z0aB1cD2eF3gH4iJ5kL6mN7oP8qR9sT0uV1wX2yZ3a4b5C6d7E8f9G0', 'CLIENTE', 2, NULL);
+(5, 'maria.garcia@email.com', '$2a$10$2xFVmkyqwHeUu65k0WlmVuqWvTgzYig.tAmkebQPVgIxSnlNXnaEy', 'María', 'García', 'maria.garcia@email.com', 'CLIENTE', 2, NULL);
 
 -- ============================================================
 -- CONFIRMACIÓN
